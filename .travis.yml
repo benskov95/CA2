@@ -6,6 +6,12 @@ dist: bionic
 
 language: java
 
+# safelist
+branches:
+  only:
+  - master
+  - stable
+
 cache:
   directories:  
     - $HOME/.m2
@@ -49,3 +55,4 @@ before_script:
 # - sudo systemctl start mysql
 - mysql --version
 - echo "before_script Complete"
+
