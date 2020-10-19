@@ -32,9 +32,11 @@ public class Hobby implements Serializable {
     public Hobby() {
     }
 
-    public Hobby(String name, String description) {
+    public Hobby(String name, String wikiLink, String category, String type) {
         this.name = name;
-        this.wikiLink = description;
+        this.wikiLink = wikiLink;
+        this.category = category;
+        this.type = type;
     }
 
     public int getId() {
