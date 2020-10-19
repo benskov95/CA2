@@ -14,6 +14,7 @@ import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,6 +93,63 @@ public class PersonFacadeTest {
 //        assertTrue(pDTO.getHobbies() == p2.getHobbies());
     }
     
+    @Test
+    public void testGetAllPersonsWithHobby() {
+//        List<PersonDTO> persons = facade.getAllPersonsWithHobby("Dancing");
+//        assertEquals(1, persons.size());
+    }
+    
+    @Test
+    public void testGetAllPersonsFromCity() {
+//        List<PersonDTO> persons = facade.getAllPersonsFromCity("Valhalla");
+//        assertEquals(2, persons.size());
+    }
+    
+    @Test
+    public void testDeletePerson() {
+//        PersonDTO deleted = facade.deletePerson(p1.getId());
+//        PersonNotFound thrown
+//                = assertThrows(PersonNotFound.class, () -> {
+//                    facade.getPerson(deleted.getId());
+//                });
+//        assertTrue(thrown.getMessage().equals("Person with the provided ID was not found."));
+    }
+    
+    @Test
+    public void testEditPerson() {
+//        assertTrue(p1.getFirstName().equals("Erik"));
+//        p1.setFirstName("Anton");
+//        p1.setLastName("Jones");
+//        facade.editPerson(new PersonDTO(p1));
+//        assertTrue(facade.getPerson(p1.getId()).getFirstName().equals("Anton"));
+    }
+    
+    @Test
+    public void testGetPersonCount() {
+//        long count = facade.getPersonCount();
+//        assertEquals(2, count);
+    }
+    
+//    @Test
+//    public void testPersonNotFoundException() {
+//        PersonNotFound thrown
+//                = assertThrows(PersonNotFound.class, () -> {
+//                    facade.getPerson(500);
+//                });
+//        assertTrue(thrown.getMessage().equals("Person with the provided ID was not found."));
+//    }
+//    
+//    @Test
+//    public void testMissingInputException() {
+//        PersonDTO pTest = new PersonDTO();
+//        pTest.setFirstName("Testerman");
+//        MissingInput thrown
+//                = assertThrows(MissingInput.class, () -> {
+//                    facade.addPerson(pTest);
+//                });
+//        assertTrue(thrown.getMessage().equals("First name, last name, phone or address info is missing."));
+//    }
+    
     public static void prepareTestPersons() {
     phones1 = new ArrayList();
     phones2 = new ArrayList();
@@ -100,10 +158,9 @@ public class PersonFacadeTest {
 
     p1 = new Person("joe@testmail.dk", "Joe", "Hansen");
     p2 = new Person("gurli@testmail.dk", "Gurli", "Kofod");
-    c1 = new CityInfo(3700, "Rønne");
     c2 = new CityInfo(9999, "Valhalla");
     a1 = new Address("Troldevej 9", c1);
-    a2 = new Address("Vikingegade 35", c2);
+    a2 = new Address("Vikingegade 35", c1);
 
     phones1.add(new Phone("2834928", "home"));
     phones2.add(new Phone("99483271", "work"));
@@ -111,7 +168,7 @@ public class PersonFacadeTest {
 
     h1.add(new Hobby("Sailing", "sailing.dk", "general", "outdoors"));
     h1.add(new Hobby("Dancing", "dancing.dk", "general", "indoors"));
-    h2.add(new Hobby("Fishing", "fishing.dk", "general", "outdoors"));
+    h2.add(new Hobby("Sailing", "sailing.dk", "general", "outdoors"));
 
     p1.setAddress(a1);
     p1.setPhoneNumbers(phones1);
