@@ -95,7 +95,25 @@ public class PersonFacade implements IPersonFacade {
 
     @Override
     public List<PersonDTO> getAllPersonsWithHobby(String hobby) {
-        return null;
+
+        EntityManager em = getEntityManager();
+
+        TypedQuery<Person> query = em.createQuery(
+                "SELECT p FROM Person p join p.hobbies h where h.name = :hobby", Person.class);
+        query.setParameter("hobby", hobby);
+
+        List<Person> personList = query.getResultList();
+
+        List<PersonDTO> personDTOList = new ArrayList<>();
+
+        for (Person person : personList) {
+
+            personDTOList.add(new PersonDTO(person));
+
+        }
+
+        return  personDTOList;
+
     }
 
     @Override
@@ -173,15 +191,15 @@ public class PersonFacade implements IPersonFacade {
         }
     }
 
-//    public static void main(String[] args) {
+  //  public static void main(String[] args) {
 //
-//        Person person = new Person("John@mail.dk", "John", "Rasmussen");
-//        Address address = new Address("Smedeløkken 66", new CityInfo(3770, "Allinge"));
+//        Person person = new Person("ko@mail.dk", "Lola", "Rasmussen");
+//        Address address = new Address("Smedeløkken 66", new CityInfo(3700, "Rønne"));
 //        List<Hobby> hobbies = new ArrayList<>();
 //        hobbies.add(new Hobby("Fodbold", "ko lort", "Prutfis", "lort"));
 //        List<Phone> phones = new ArrayList<>();
-//        phones.add(new Phone("4214214", "work"));
-//        phones.add(new Phone("1122444", "home"));
+//        phones.add(new Phone("41213123", "work"));
+//        phones.add(new Phone("144412414", "home"));
 //
 //        person.setPhoneNumbers(phones);
 //        person.setHobbies(hobbies);
@@ -192,8 +210,8 @@ public class PersonFacade implements IPersonFacade {
 //        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
 //
 //        PersonFacade.getPersonFacade(emf).addPerson(personDTO);
-//       PersonDTO personDTO = PersonFacade.getPersonFacade(emf).getPersonByPhone("2010210102");
-//        System.out.println(personDTO.getFirstName());
-//    }
- //   }
+//
+//
+// }
+
 }
