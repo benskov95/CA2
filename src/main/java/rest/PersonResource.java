@@ -33,7 +33,7 @@ public class PersonResource {
     }
     
     @GET
-    @Path("{id}")
+    @Path("id/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public String getPersonById(@PathParam("id") int id) {
         PersonDTO personDTO = FACADE.getPersonById(id);
