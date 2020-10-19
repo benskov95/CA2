@@ -14,4 +14,5 @@ public interface IPersonFacade {
     public List<PersonDTO> getAllPersonsWithHobby (String hobby);
     public PersonDTO deletePerson (int id);
     public PersonDTO editPerson (PersonDTO personDTO);
+    public PersonDTO getPersonById(int id);
 }
