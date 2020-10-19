@@ -69,9 +69,27 @@ public class PersonFacadeTest {
     }
     
     @Test
+    public void testAddPerson() {
+//        PersonDTO pDTO = new PersonDTO(p1);
+//        pDTO.setFirstName("Leif");
+//        pDTO.setLastName("Grågård");
+//        pDTO.setEmail("leif@testmail.dk");
+//        pDTO.setPhoneNumbers(new ArrayList());
+//        pDTO.getPhoneNumbers().add(new Phone("84772323", "work"));
+//        PersonDTO addedPerson = facade.addPerson(pDTO);
+//        assertEquals(3, facade.getAllPersons().size())
+    }
+    
+    @Test
     public void testGetPersonByPhone() {
 //        PersonDTO pDTO = facade.getPersonByPhone(p1.getPhoneNumbers().get(0));
 //        assertEquals(p1.getFirstName(), pDTO.getFirstName());
+    }
+    
+    @Test
+    public void testGetPersonByID() {
+//        PersonDTO pDTO = facade.getPersonByID(p2.getId());
+//        assertTrue(pDTO.getHobbies() == p2.getHobbies());
     }
     
     public static void prepareTestPersons() {
