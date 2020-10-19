@@ -84,26 +84,26 @@ public class PersonFacadeTest {
     
     @Test
     public void testGetPersonByPhone() {
-//        PersonDTO pDTO = facade.getPersonByPhone(p1.getPhoneNumbers().get(0));
-//        assertEquals(p1.getFirstName(), pDTO.getFirstName());
+        PersonDTO pDTO = facade.getPersonByPhone(p1.getPhoneNumbers().get(0).getNumber());
+        assertEquals(p1.getFirstName(), pDTO.getFirstName());
     }
     
     @Test
     public void testGetPersonByID() {
-//        PersonDTO pDTO = facade.getPersonByID(p2.getId());
-//        assertTrue(pDTO.getHobbies() == p2.getHobbies());
+        PersonDTO pDTO = facade.getPersonById(p2.getId());
+        assertTrue(pDTO.getEmail().equals(p2.getEmail()));
     }
     
     @Test
     public void testGetAllPersonsWithHobby() {
-//        List<PersonDTO> persons = facade.getAllPersonsWithHobby("Dancing");
-//        assertEquals(1, persons.size());
+        List<PersonDTO> persons = facade.getAllPersonsWithHobby("Dancing");
+        assertEquals(1, persons.size());
     }
     
     @Test
     public void testGetAllPersonsFromCity() {
-//        List<PersonDTO> persons = facade.getAllPersonsFromCity("Valhalla");
-//        assertEquals(2, persons.size());
+        List<PersonDTO> persons = facade.getAllPersonsFromCity("Valhalla");
+        assertEquals(2, persons.size());
     }
     
     @Test
@@ -123,12 +123,6 @@ public class PersonFacadeTest {
 //        p1.setLastName("Jones");
 //        facade.editPerson(new PersonDTO(p1));
 //        assertTrue(facade.getPerson(p1.getId()).getFirstName().equals("Anton"));
-    }
-    
-    @Test
-    public void testGetPersonCount() {
-//        long count = facade.getPersonCount();
-//        assertEquals(2, count);
     }
     
 //    @Test
