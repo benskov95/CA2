@@ -29,6 +29,14 @@ public class PersonResource {
         return new Gson().toJson(personDTOs);
     }
     
+    @GET
+    @Path("phone/{phone}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getPersonByPhone(@PathParam("phone") String phone) {
+        PersonDTO personDTO = FACADE.getPersonByPhone(phone);
+        return new Gson().toJson(personDTO);
+    }
+    
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
