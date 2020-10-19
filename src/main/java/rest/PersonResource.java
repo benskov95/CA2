@@ -28,12 +28,20 @@ public class PersonResource {
         List<PersonDTO> personDTOs = FACADE.getAllPersons();
         return new Gson().toJson(personDTOs);
     }
-    
+
     @GET
     @Path("city/{city}")
     @Produces({MediaType.APPLICATION_JSON})
     public String getAllPersonsFromCity(@PathParam("city") String city) {
         List<PersonDTO> personDTOs = FACADE.getAllPersonsFromCity(city);
+        return new Gson().toJson(personDTOs);
+    }
+
+    @GET
+    @Path("hobby/{hobby}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getAllPersonsWithHobby(@PathParam("hobby") String hobby) {
+        List<PersonDTO> personDTOs = FACADE.getAllPersonsWithHobby(hobby);
         return new Gson().toJson(personDTOs);
     }
 
