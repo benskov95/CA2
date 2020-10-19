@@ -24,7 +24,7 @@ public class Address implements Serializable {
     @Column (name = "street")
     private String street;
     
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne (cascade = CascadeType.PERSIST)
     private CityInfo cityInfo;
     
     @OneToMany (mappedBy = "address")
