@@ -129,7 +129,21 @@ public class PersonFacade implements IPersonFacade {
 
     @Override
     public PersonDTO editPerson(PersonDTO personDTO) {
-        return null;
+        EntityManager em = getEntityManager();
+
+        try{
+            Person p = em.find(Person.class, personDTO.getId());
+            assignDTOValues(p, personDTO);
+            createNewOrUseExisitingInfo(em, p);
+            newPhonesOrExisting(em, p);
+            em.getTransaction().begin();
+            em.persist(p);
+            em.getTransaction().commit();
+            deleteUnusedAddress(em);
+            return new PersonDTO(p);
+        }   finally {
+            em.close();
+        }
     }
 
     @Override
@@ -231,6 +245,50 @@ public class PersonFacade implements IPersonFacade {
             em.getTransaction().commit();
         }
     }
+    private void assignDTOValues(Person p, PersonDTO pDTO) {
+        CityInfo cityInfo = new CityInfo(pDTO.getZipCode(), pDTO.getCity());
+        Address address = new Address(pDTO.getStreet(), cityInfo);
+        p.setFirstName(pDTO.getFirstName());
+        p.setLastName(pDTO.getLastName());
+        p.setEmail(pDTO.getEmail());
+        p.setAddress(address);
+        p.setHobbies(pDTO.getHobbies());
+        p.setPhoneNumbers(pDTO.getPhoneNumbers());
+    }
+
+    private void newPhonesOrExisting(EntityManager em, Person p) {
+        Query q = em.createQuery("SELECT p FROM Phone p");
+        List<Phone> phoneNumbers = q.getResultList();
+        int phoneCount = -1;
+        for (Phone p1 : p.getPhoneNumbers()) {
+            phoneCount++;
+            for (Phone p2 : phoneNumbers) {
+                if (p2.getNumber().equals(p1.getNumber())) {
+                    p.getPhoneNumbers().set(phoneCount, p2);
+                }
+            }
+        }
+    }
+
+    private void deleteUnusedAddress(EntityManager em) {
+        Query q2 = em.createQuery("SELECT p.address.id FROM Person p");
+        Query q3 = em.createQuery("SELECT a.id FROM Address a");
+
+        List<Integer> pAddressIDs = q2.getResultList();
+        List<Integer> addressIDs = q3.getResultList();
+
+        for (Integer addressID : addressIDs) {
+            if (!pAddressIDs.contains(addressID)) {
+                em.getTransaction().begin();
+                Query q4 = em.createQuery("DELETE FROM Address a WHERE a.id = :a_id")
+                        .setParameter("a_id", addressID);
+                q4.executeUpdate();
+                em.getTransaction().commit();
+                break;
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
 
