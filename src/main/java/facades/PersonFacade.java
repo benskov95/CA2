@@ -133,6 +133,16 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
+    public PersonDTO getPersonById(int id) {
+        EntityManager em = getEntityManager();
+
+        Person person = em.find(Person.class,id);
+
+        return new PersonDTO(person);
+
+    }
+
+    @Override
     public PersonDTO getPersonByPhone(String phone) {
 
         EntityManager em = getEntityManager();
