@@ -118,7 +118,13 @@ public class PersonFacade implements IPersonFacade {
 
     @Override
     public PersonDTO deletePerson(int id) {
-        return null;
+
+        EntityManager em = getEntityManager();
+        Person person = em.find(Person.class,id);
+        determineDeletionProcess(em,person);
+
+        return new PersonDTO(person);
+
     }
 
     @Override
@@ -168,8 +174,10 @@ public class PersonFacade implements IPersonFacade {
         List<Person> existingPersons = q4.getResultList();
 
         for (Address a : addresses) {
-            if (a.getStreet().equals(p.getAddress().getStreet())) {
-                p.setAddress(a);
+            if (a.getStreet().equals(p.getAddress().getStreet()) &&
+                    p.getAddress().getCityInfo().getZipCode() == a.getCityInfo().getZipCode()) {
+
+                    p.setAddress(a);
             }
         }
         for (CityInfo c : cities) {
@@ -190,28 +198,51 @@ public class PersonFacade implements IPersonFacade {
             p.setEmail(existingPersons.get(0).getEmail());
         }
     }
+    private void determineDeletionProcess(EntityManager em, Person person) {
 
-  //  public static void main(String[] args) {
+        List<Person> sameAddr = new ArrayList();
+        TypedQuery q1 = em.createQuery("SELECT p FROM Person p", Person.class);
+        List<Person> persons = q1.getResultList();
+
+        for (Person pFromDB : persons) {
+            if (pFromDB.getAddress().getId() == person.getAddress().getId()) {
+                sameAddr.add(pFromDB);
+            }
+        }
+
+        if (sameAddr.size() > 1) {
+            em.getTransaction().begin();
+            em.remove(person);
+            em.getTransaction().commit();
+        } else {
+            em.getTransaction().begin();
+            em.remove(person);
+            em.remove(person.getAddress());
+            em.getTransaction().commit();
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Person person = new Person("kadao@mail.dk", "Kenneth", "Rasmussen");
+        Address address = new Address("Smedeløkken 66", new CityInfo(3700, "Rønne"));
+        List<Hobby> hobbies = new ArrayList<>();
+        hobbies.add(new Hobby("Fodbold", "ko lort", "Prutfis", "lort"));
+        List<Phone> phones = new ArrayList<>();
+        phones.add(new Phone("41211", "work"));
+        phones.add(new Phone("1114", "home"));
+
+        person.setPhoneNumbers(phones);
+        person.setHobbies(hobbies);
+        person.setAddress(address);
+
+        PersonDTO personDTO = new PersonDTO(person);
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+
+        PersonFacade.getPersonFacade(emf).addPerson(personDTO);
+
 //
-//        Person person = new Person("ko@mail.dk", "Lola", "Rasmussen");
-//        Address address = new Address("Smedeløkken 66", new CityInfo(3700, "Rønne"));
-//        List<Hobby> hobbies = new ArrayList<>();
-//        hobbies.add(new Hobby("Fodbold", "ko lort", "Prutfis", "lort"));
-//        List<Phone> phones = new ArrayList<>();
-//        phones.add(new Phone("41213123", "work"));
-//        phones.add(new Phone("144412414", "home"));
-//
-//        person.setPhoneNumbers(phones);
-//        person.setHobbies(hobbies);
-//        person.setAddress(address);
-//
-//        PersonDTO personDTO = new PersonDTO(person);
-//
-//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
-//
-//        PersonFacade.getPersonFacade(emf).addPerson(personDTO);
-//
-//
-// }
+ }
 
 }
