@@ -1,5 +1,6 @@
 package facades;
 
+import dto.PersonDTO;
 import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
@@ -65,7 +66,12 @@ public class PersonFacadeTest {
     public void testGetAllPersons() {
 //        List<PersonDTO> persons = facade.getAllPersons();
 //        assertTrue(persons.size() == 2);
-
+    }
+    
+    @Test
+    public void testGetPersonByPhone() {
+//        PersonDTO pDTO = facade.getPersonByPhone(p1.getPhoneNumbers().get(0));
+//        assertEquals(p1.getFirstName(), pDTO.getFirstName());
     }
     
     public static void prepareTestPersons() {
