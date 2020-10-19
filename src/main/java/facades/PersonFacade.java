@@ -77,7 +77,7 @@ public class PersonFacade implements IPersonFacade{
     @Override
     public List<PersonDTO> getAllPersonsFromCity(String city) {
 
-        EntityManager em =
+        return null;
     }
 
     @Override
