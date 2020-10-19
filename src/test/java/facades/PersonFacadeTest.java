@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Test;
 public class PersonFacadeTest {
 
     private static EntityManagerFactory emf;
-    private static FacadeExample facade;
+    private static PersonFacade facade;
     private static Person p1, p2;
     private static Address a1, a2;
-    private static CityInfo c1, c2;
+    private static CityInfo c1;
     private static List<Phone> phones1, phones2;
     private static List<Hobby> h1, h2;
 
@@ -37,8 +37,18 @@ public class PersonFacadeTest {
     @BeforeAll
     public static void setUpClass() {
        emf = EMF_Creator.createEntityManagerFactoryForTest();
-       facade = FacadeExample.getFacadeExample(emf);
-    }
+       facade = PersonFacade.getPersonFacade(emf);
+       EntityManager em = emf.createEntityManager();
+       prepareTestPersons();
+       try {
+           em.getTransaction().begin();
+           em.persist(p1);
+           em.persist(p2);
+           em.getTransaction().commit();
+       } finally {
+           em.close();
+       }
+   }
 
     @AfterAll
     public static void tearDownClass() {
@@ -46,17 +56,6 @@ public class PersonFacadeTest {
 
     @BeforeEach
     public void setUp() {
-        EntityManager em = emf.createEntityManager();
-        prepareTestPersons();
-        try {
-            em.getTransaction().begin();
-            em.createNamedQuery("Person.deleteAllRows", Person.class);
-            em.persist(p1);
-            em.persist(p2);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
     }
 
     @AfterEach
@@ -65,20 +64,21 @@ public class PersonFacadeTest {
     
     @Test
     public void testGetAllPersons() {
-//        List<PersonDTO> persons = facade.getAllPersons();
-//        assertTrue(persons.size() == 2);
+        List<PersonDTO> persons = facade.getAllPersons();
+        assertTrue(persons.size() == 2);
     }
     
     @Test
     public void testAddPerson() {
-//        PersonDTO pDTO = new PersonDTO(p1);
-//        pDTO.setFirstName("Leif");
-//        pDTO.setLastName("Grågård");
-//        pDTO.setEmail("leif@testmail.dk");
-//        pDTO.setPhoneNumbers(new ArrayList());
-//        pDTO.getPhoneNumbers().add(new Phone("84772323", "work"));
-//        PersonDTO addedPerson = facade.addPerson(pDTO);
-//        assertEquals(3, facade.getAllPersons().size())
+        PersonDTO pDTO = new PersonDTO(p1);
+        pDTO.setFirstName("Leif");
+        pDTO.setLastName("Grågård");
+        pDTO.setEmail("leif@testmail.dk");
+        pDTO.setPhoneNumbers(new ArrayList());
+        pDTO.getPhoneNumbers().add(new Phone("84772323", "work"));
+        PersonDTO addedPerson = facade.addPerson(pDTO);
+        assertEquals(3, facade.getAllPersons().size());
+        assertTrue(addedPerson.getCity().equals("Valhalla"));
     }
     
     @Test
@@ -158,7 +158,7 @@ public class PersonFacadeTest {
 
     p1 = new Person("joe@testmail.dk", "Joe", "Hansen");
     p2 = new Person("gurli@testmail.dk", "Gurli", "Kofod");
-    c2 = new CityInfo(9999, "Valhalla");
+    c1 = new CityInfo(9999, "Valhalla");
     a1 = new Address("Troldevej 9", c1);
     a2 = new Address("Vikingegade 35", c1);
 
