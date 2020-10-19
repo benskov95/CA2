@@ -6,6 +6,7 @@ import dto.PersonDTO;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -77,6 +78,14 @@ public class PersonResource {
         PersonDTO personDTO = GSON.fromJson(person, PersonDTO.class);
         personDTO.setId(id);
         personDTO = FACADE.editPerson(personDTO);
+        return new Gson().toJson(personDTO);
+    }
+
+    @DELETE
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String deletePerson(@PathParam("id") int id) {
+        PersonDTO personDTO = FACADE.deletePerson(id);
         return new Gson().toJson(personDTO);
     }
 }
