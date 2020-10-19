@@ -75,6 +75,26 @@ public class PersonFacade implements IPersonFacade{
     }
 
     @Override
+    public List<PersonDTO> getAllPersonsFromCity(String city) {
+        return null;
+    }
+
+    @Override
+    public List<PersonDTO> getAllPersonsWithHobby(String hobby) {
+        return null;
+    }
+
+    @Override
+    public PersonDTO deletePerson(int id) {
+        return null;
+    }
+
+    @Override
+    public PersonDTO editPerson(PersonDTO personDTO) {
+        return null;
+    }
+
+    @Override
     public PersonDTO getPersonByPhone(String phone) {
 
         EntityManager em = getEntityManager();
@@ -104,7 +124,7 @@ public class PersonFacade implements IPersonFacade{
         return newPerson;
     }
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 
 //        Person person = new Person("Pelle@mail.dk","Pelle","Rasmussen");
 //        Address address = new Address("Smedeløkken 66", new CityInfo(3770,"Allinge"));
@@ -120,10 +140,10 @@ public class PersonFacade implements IPersonFacade{
 //
 //        PersonDTO personDTO = new PersonDTO(person);
 //
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
 //
 //        PersonFacade.getPersonFacade(emf).addPerson(personDTO);
-       PersonDTO personDTO = PersonFacade.getPersonFacade(emf).getPersonByPhone("2010210102");
-        System.out.println(personDTO.getFirstName());
-    }
+//       PersonDTO personDTO = PersonFacade.getPersonFacade(emf).getPersonByPhone("2010210102");
+//        System.out.println(personDTO.getFirstName());
+//    }
 }
