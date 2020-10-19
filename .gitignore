@@ -17,7 +17,7 @@
 
 # Generated files
 .idea/**/contentModel.xml
-
+.bornit-ca2.iml
 # Sensitive or high-churn files
 .idea/**/dataSources/
 .idea/**/dataSources.ids
@@ -110,3 +110,4 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/intellij
 
 /nbproject/
+bornit-ca2.iml
