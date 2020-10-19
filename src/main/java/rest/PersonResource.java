@@ -30,6 +30,14 @@ public class PersonResource {
         List<PersonDTO> personDTOs = FACADE.getAllPersons();
         return new Gson().toJson(personDTOs);
     }
+    
+    @GET
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getPersonById(@PathParam("id") int id) {
+        PersonDTO personDTO = FACADE.getPersonById(id);
+        return new Gson().toJson(personDTO);
+    }
 
     @GET
     @Path("city/{city}")
