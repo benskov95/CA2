@@ -3,6 +3,7 @@ package rest;
 import dto.HobbyDTO;
 import dto.PersonDTO;
 import entities.*;
+import exceptions.PersonNotFound;
 import facades.PersonFacade;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.ws.rs.core.UriBuilder;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
@@ -62,18 +64,7 @@ public class PersonResourceTest {
         RestAssured.port = SERVER_PORT;
         RestAssured.defaultParser = Parser.JSON;
 
-        emf = EMF_Creator.createEntityManagerFactoryForTest();
-        facade = PersonFacade.getPersonFacade(emf);
-        EntityManager em = emf.createEntityManager();
-        prepareTestPersons();
-        try {
-            em.getTransaction().begin();
-            em.persist(p1);
-            em.persist(p2);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
+
     }
     
     @AfterAll
@@ -89,6 +80,23 @@ public class PersonResourceTest {
     @BeforeEach
     public void setUp() {
 
+        emf = EMF_Creator.createEntityManagerFactoryForTest();
+        facade = PersonFacade.getPersonFacade(emf);
+        EntityManager em = emf.createEntityManager();
+        prepareTestPersons();
+        try {
+            em.getTransaction().begin();
+            em.createNamedQuery("Person.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Address.deleteAllRows").executeUpdate();
+            em.createNamedQuery("CityInfo.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Phone.deleteAllRows").executeUpdate();
+            em.persist(p1);
+            em.persist(p2);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+
     }
     public static void prepareTestPersons() {
 
@@ -99,7 +107,7 @@ public class PersonResourceTest {
 
         p1 = new Person("joe@testmail.dk", "Joe", "Hansen");
         p2 = new Person("gurli@testmail.dk", "Gurli", "Kofod");
-        c1 = new CityInfo(9999, "Valhalla");
+        c1 = new CityInfo("9999", "Valhalla");
         a1 = new Address("Troldevej 9", c1);
         a2 = new Address("Vikingegade 35", c1);
 
@@ -196,7 +204,7 @@ public class PersonResourceTest {
                 .assertThat()
                 .statusCode(200)
                 .and()
-                .body("zipCode", hasItem(9999));
+                .body("zipCode", hasItem("9999"));
 
     }
     @Test
@@ -222,7 +230,7 @@ public class PersonResourceTest {
     public void TestAddPerson() {
 
         Person testPerson = new Person("Pelle@mail.dk", "Pelle", "Rasmussen");
-        Address testAddress = new Address("Testvej 4", new CityInfo(666, "Helvede"));
+        Address testAddress = new Address("Testvej 4", new CityInfo("666", "Helvede"));
 
         List<Phone> testPhoneList = new ArrayList<>();
         Phone testPhone = new Phone("666", "Work");
@@ -289,7 +297,7 @@ public class PersonResourceTest {
 
 }
         @Test
-    public void TestEditPerson() {
+    public void TestEditPerson()  {
 
             p1.setFirstName("John");
             PersonDTO personDTO = new PersonDTO(p1);
@@ -306,6 +314,22 @@ public class PersonResourceTest {
                     .body("id", equalTo(p1.getId()))
                     .and()
                     .body("firstName", equalTo("John"));
+
+
+        }
+
+        @Test
+    public void TestExeceptionGetPersonByPhone() {
+
+        given()
+                .contentType("application/json")
+                .get("persons/phone/1234")
+                .then()
+                .assertThat()
+                .statusCode(404)
+                .and()
+                .assertThat()
+                .body("message", equalTo("Person with the provided phone number was not found."));
 
 
         }

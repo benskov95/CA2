@@ -190,7 +190,7 @@ public class PersonFacade implements IPersonFacade {
 
         return new PersonDTO(query.getSingleResult());
         } catch (Exception e) {
-            throw new PersonNotFound("Person with the provided ID was not found.");
+            throw new PersonNotFound("Person with the provided phone number was not found.");
             
         }
 
