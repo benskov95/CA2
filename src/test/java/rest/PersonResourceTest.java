@@ -1,5 +1,6 @@
 package rest;
 
+import dto.HobbyDTO;
 import dto.PersonDTO;
 import entities.*;
 import facades.PersonFacade;
@@ -196,6 +197,25 @@ public class PersonResourceTest {
                 .statusCode(200)
                 .and()
                 .body("zipCode", hasItem(9999));
+
+    }
+    @Test
+    public void testGetAllHobbies(){
+
+        HobbyDTO hobbyDTO = new HobbyDTO(h1.get(0));
+
+        given()
+                .contentType("application/json")
+                .get("/persons/hobbies")
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .and()
+                .body("name", hasItem("Sailing"))
+                .and()
+                .body("name", hasItem("Dancing"));
+
+
 
     }
 
