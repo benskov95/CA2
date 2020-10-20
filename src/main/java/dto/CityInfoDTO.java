@@ -4,7 +4,7 @@ import entities.CityInfo;
 
 public class CityInfoDTO {
     
-    private int zipCode;
+    private String zipCode;
     private String city;
 
     public CityInfoDTO(CityInfo cityInfo) {
@@ -12,11 +12,11 @@ public class CityInfoDTO {
         this.city = cityInfo.getCity();
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 
