@@ -335,7 +335,7 @@ public class PersonResourceTest {
         }
 
         @Test
-    public void testExceptionCountHobbies (){
+         public void testPersonNotFound (){
 
         given()
                 .contentType("application/json")
@@ -346,6 +346,22 @@ public class PersonResourceTest {
                 .and()
                 .assertThat()
                 .body("message", equalTo("There are no persons with this hobby"));
+
+        }
+        @Test
+            public void testMissingInput (){
+
+            p1.setFirstName("");
+            PersonDTO personDTO = new PersonDTO(p1);
+
+            given()
+                    .contentType("application/json")
+                    .body(personDTO)
+                    .put("persons/{id}", p1.getId())
+                    .then()
+                    .assertThat()
+                    .body("message", equalTo("All fields must be filled out"));
+
 
         }
 

@@ -143,10 +143,12 @@ public class PersonFacade implements IPersonFacade {
     @Override
     public PersonDTO editPerson(PersonDTO personDTO) throws PersonNotFound, MissingInput {
         EntityManager em = getEntityManager();
-
+        Person p = em.find(Person.class, personDTO.getId());
+        if (p == null){
+            throw new PersonNotFound("Person with the provided ID was not found.");
+        }
         try {
             hasInput(personDTO);
-            Person p = em.find(Person.class, personDTO.getId());
             assignDTOValues(p, personDTO);
             createNewOrUseExisitingInfo(em, p);
             newPhonesOrExisting(em, p);
@@ -155,11 +157,8 @@ public class PersonFacade implements IPersonFacade {
             em.getTransaction().commit();
             deleteUnusedAddress(em);
             return new PersonDTO(p);
-            
-        } catch (Exception e) {
-            throw new PersonNotFound("Person with the provided ID was not found.");
-            
-        } finally {
+
+        }finally {
             em.close();
         }
     }
