@@ -291,7 +291,21 @@ public class PersonResourceTest {
         @Test
     public void TestEditPerson() {
 
+            p1.setFirstName("John");
+            PersonDTO personDTO = new PersonDTO(p1);
 
+            given()
+                    .contentType("application/json")
+                    .body(personDTO)
+                    .put("persons/{id}", p1.getId())
+                    .then()
+                    .assertThat()
+                    .statusCode(200)
+                    .and()
+                    .assertThat()
+                    .body("id", equalTo(p1.getId()))
+                    .and()
+                    .body("firstName", equalTo("John"));
 
 
         }
