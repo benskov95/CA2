@@ -2,6 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dto.HobbyDTO;
 import dto.PersonDTO;
 import facades.PersonFacade;
 import java.util.List;
@@ -96,5 +97,13 @@ public class PersonResource {
     public String deletePerson(@PathParam("id") int id) {
         PersonDTO personDTO = FACADE.deletePerson(id);
         return new Gson().toJson(personDTO);
+    }
+    
+    @GET
+    @Path("hobbies")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getAllHobbies() {
+        List<HobbyDTO> hDTOs = FACADE.getAllHobbies();
+        return new Gson().toJson(hDTOs);
     }
 }

@@ -1,5 +1,6 @@
 package facades;
 
+import dto.HobbyDTO;
 import dto.PersonDTO;
 import entities.*;
 
@@ -169,6 +170,17 @@ public class PersonFacade implements IPersonFacade {
         return new PersonDTO(query.getSingleResult());
 
     }
+    
+    public List<HobbyDTO> getAllHobbies() {
+        EntityManager em = getEntityManager();
+        TypedQuery q = em.createQuery("SELECT h FROM Hobby h", Hobby.class);
+        List<HobbyDTO> hDTOs = new ArrayList();
+        List<Hobby> hobbies = q.getResultList();
+        for (Hobby h : hobbies) {
+            hDTOs.add(new HobbyDTO(h));
+        }
+        return hDTOs;
+    }
 
     private Person preparePerson(PersonDTO personDTO) {
 
@@ -290,27 +302,27 @@ public class PersonFacade implements IPersonFacade {
     }
 
 
-    public static void main(String[] args) {
-
-        Person person = new Person("kadao@mail.dk", "Kenneth", "Rasmussen");
-        Address address = new Address("Smedeløkken 66", new CityInfo(3700, "Rønne"));
-        List<Hobby> hobbies = new ArrayList<>();
-        hobbies.add(new Hobby("Fodbold", "ko lort", "Prutfis", "lort"));
-        List<Phone> phones = new ArrayList<>();
-        phones.add(new Phone("41211", "work"));
-        phones.add(new Phone("1114", "home"));
-
-        person.setPhoneNumbers(phones);
-        person.setHobbies(hobbies);
-        person.setAddress(address);
-
-        PersonDTO personDTO = new PersonDTO(person);
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
-
-        PersonFacade.getPersonFacade(emf).addPerson(personDTO);
-
+//    public static void main(String[] args) {
 //
- }
+//        Person person = new Person("kadao@mail.dk", "Kenneth", "Rasmussen");
+//        Address address = new Address("Smedeløkken 66", new CityInfo(3700, "Rønne"));
+//        List<Hobby> hobbies = new ArrayList<>();
+//        hobbies.add(new Hobby("Fodbold", "ko lort", "Prutfis", "lort"));
+//        List<Phone> phones = new ArrayList<>();
+//        phones.add(new Phone("41211", "work"));
+//        phones.add(new Phone("1114", "home"));
+//
+//        person.setPhoneNumbers(phones);
+//        person.setHobbies(hobbies);
+//        person.setAddress(address);
+//
+//        PersonDTO personDTO = new PersonDTO(person);
+//
+//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+//
+//        PersonFacade.getPersonFacade(emf).addPerson(personDTO);
+//
+////
+// }
 
 }
