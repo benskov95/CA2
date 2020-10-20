@@ -112,7 +112,6 @@ public class PersonFacadeTest {
                 = assertThrows(PersonNotFound.class, () -> {
                     facade.getPersonById(deleted.getId());
                 });
-        System.out.println(thrown.getMessage());
         assertTrue(thrown.getMessage().equals("Person with the provided ID was not found."));
     }
 
