@@ -71,7 +71,12 @@ public class PersonResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String getAllPersonsWithHobbyCount(@PathParam("hobby") String hobby) throws PersonNotFound {
         List<PersonDTO> personDTOs = FACADE.getAllPersonsWithHobby(hobby);
-        return "{\"count\":" + personDTOs.size() + "}";
+        if (personDTOs.size() == 0){
+            throw new PersonNotFound("There are no persons with this hobby");
+        }else {
+
+            return "{\"count\":" + personDTOs.size() + "}";
+        }
     }
 
     @POST
