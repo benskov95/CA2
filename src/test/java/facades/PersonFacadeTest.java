@@ -6,6 +6,8 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
+import exceptions.MissingInput;
+import exceptions.PersonNotFound;
 import utils.EMF_Creator;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +71,7 @@ public class PersonFacadeTest {
     }
     
     @Test
-    public void testAddPerson() {
+    public void testAddPerson() throws MissingInput, PersonNotFound {
         PersonDTO pDTO = new PersonDTO(p1);
         pDTO.setFirstName("Leif");
         pDTO.setLastName("Grågård");
@@ -83,25 +85,25 @@ public class PersonFacadeTest {
     }
     
     @Test
-    public void testGetPersonByPhone() {
+    public void testGetPersonByPhone() throws PersonNotFound {
         PersonDTO pDTO = facade.getPersonByPhone(p1.getPhoneNumbers().get(0).getNumber());
         assertEquals(p1.getFirstName(), pDTO.getFirstName());
     }
     
     @Test
-    public void testGetPersonByID() {
+    public void testGetPersonByID() throws PersonNotFound {
         PersonDTO pDTO = facade.getPersonById(p2.getId());
         assertTrue(pDTO.getEmail().equals(p2.getEmail()));
     }
     
     @Test
-    public void testGetAllPersonsWithHobby() {
+    public void testGetAllPersonsWithHobby() throws PersonNotFound {
         List<PersonDTO> persons = facade.getAllPersonsWithHobby("Dancing");
         assertEquals(1, persons.size());
     }
     
     @Test
-    public void testGetAllPersonsFromCity() {
+    public void testGetAllPersonsFromCity() throws PersonNotFound {
         List<PersonDTO> persons = facade.getAllPersonsFromCity("Valhalla");
         assertEquals(2, persons.size());
     }
@@ -153,7 +155,7 @@ public class PersonFacadeTest {
 
     p1 = new Person("joe@testmail.dk", "Joe", "Hansen");
     p2 = new Person("gurli@testmail.dk", "Gurli", "Kofod");
-    c1 = new CityInfo(9999, "Valhalla");
+    c1 = new CityInfo("9999", "Valhalla");
     a1 = new Address("Troldevej 9", c1);
     a2 = new Address("Vikingegade 35", c1);
 

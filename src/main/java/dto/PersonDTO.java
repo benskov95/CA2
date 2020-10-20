@@ -14,7 +14,7 @@ public class PersonDTO {
     private List<Hobby> hobbies;
     private List<Phone> phoneNumbers;
     private String street;
-    private int zipCode;
+    private String zipCode;
     private String city;
 
     public PersonDTO(Person person) {
@@ -85,11 +85,11 @@ public class PersonDTO {
         this.street = street;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 

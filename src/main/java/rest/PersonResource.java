@@ -3,6 +3,8 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.PersonDTO;
+import exceptions.MissingInput;
+import exceptions.PersonNotFound;
 import facades.PersonFacade;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
@@ -34,7 +36,7 @@ public class PersonResource {
     @GET
     @Path("id/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String getPersonById(@PathParam("id") int id) {
+    public String getPersonById(@PathParam("id") int id) throws PersonNotFound {
         PersonDTO personDTO = FACADE.getPersonById(id);
         return new Gson().toJson(personDTO);
     }
@@ -42,7 +44,7 @@ public class PersonResource {
     @GET
     @Path("city/{city}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String getAllPersonsFromCity(@PathParam("city") String city) {
+    public String getAllPersonsFromCity(@PathParam("city") String city) throws PersonNotFound {
         List<PersonDTO> personDTOs = FACADE.getAllPersonsFromCity(city);
         return new Gson().toJson(personDTOs);
     }
@@ -50,7 +52,7 @@ public class PersonResource {
     @GET
     @Path("hobby/{hobby}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String getAllPersonsWithHobby(@PathParam("hobby") String hobby) {
+    public String getAllPersonsWithHobby(@PathParam("hobby") String hobby) throws PersonNotFound {
         List<PersonDTO> personDTOs = FACADE.getAllPersonsWithHobby(hobby);
         return new Gson().toJson(personDTOs);
     }
@@ -58,7 +60,7 @@ public class PersonResource {
     @GET
     @Path("phone/{phone}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String getPersonByPhone(@PathParam("phone") String phone) {
+    public String getPersonByPhone(@PathParam("phone") String phone) throws PersonNotFound {
         PersonDTO personDTO = FACADE.getPersonByPhone(phone);
         return new Gson().toJson(personDTO);
     }
@@ -66,7 +68,7 @@ public class PersonResource {
     @GET
     @Path("count/{hobby}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String getAllPersonsWithHobbyCount(@PathParam("hobby") String hobby) {
+    public String getAllPersonsWithHobbyCount(@PathParam("hobby") String hobby) throws PersonNotFound {
         List<PersonDTO> personDTOs = FACADE.getAllPersonsWithHobby(hobby);
         return "{\"count\":" + personDTOs.size() + "}";
     }
@@ -74,7 +76,7 @@ public class PersonResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String addPerson(String person) {
+    public String addPerson(String person) throws MissingInput {
         PersonDTO personDTO = GSON.fromJson(person, PersonDTO.class);
         personDTO = FACADE.addPerson(personDTO);
         return new Gson().toJson(personDTO);
@@ -83,7 +85,7 @@ public class PersonResource {
     @PUT
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String editPerson(@PathParam("id") int id, String person) {
+    public String editPerson(@PathParam("id") int id, String person) throws PersonNotFound, MissingInput {
         PersonDTO personDTO = GSON.fromJson(person, PersonDTO.class);
         personDTO.setId(id);
         personDTO = FACADE.editPerson(personDTO);
@@ -93,7 +95,7 @@ public class PersonResource {
     @DELETE
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String deletePerson(@PathParam("id") int id) {
+    public String deletePerson(@PathParam("id") int id) throws PersonNotFound {
         PersonDTO personDTO = FACADE.deletePerson(id);
         return new Gson().toJson(personDTO);
     }

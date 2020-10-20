@@ -2,6 +2,8 @@ package facades;
 
 import dto.PersonDTO;
 import entities.*;
+import exceptions.MissingInput;
+import exceptions.PersonNotFound;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,11 +31,9 @@ public class PersonFacade implements IPersonFacade {
         return instance;
     }
 
-
     private EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
-
 
     @Override
     public List<PersonDTO> getAllPersons() {
@@ -51,16 +51,16 @@ public class PersonFacade implements IPersonFacade {
 
         }
 
-
         return dtoList;
     }
 
     @Override
-    public PersonDTO addPerson(PersonDTO personDTO) {
+    public PersonDTO addPerson(PersonDTO personDTO) throws MissingInput {
 
         EntityManager em = getEntityManager();
 
         try {
+            hasInput(personDTO);
             Person newPerson = preparePerson(personDTO);
             createNewOrUseExisitingInfo(em, newPerson);
             em.getTransaction().begin();
@@ -75,63 +75,76 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public List<PersonDTO> getAllPersonsFromCity(String city) {
+    public List<PersonDTO> getAllPersonsFromCity(String city) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Person> query = em.createQuery(
+                    "SELECT p FROM Person p join p.address.cityInfo c where c.city = :city", Person.class);
+            query.setParameter("city", city);
+            List<Person> resultList = query.getResultList();
 
-        TypedQuery<Person> query = em.createQuery(
-                "SELECT p FROM Person p join p.address.cityInfo c where c.city = :city", Person.class);
-        query.setParameter("city", city);
-        List<Person> resultList = query.getResultList();
+            List<PersonDTO> personDTOList = new ArrayList<>();
+            for (Person person : resultList) {
 
-        List<PersonDTO> personDTOList = new ArrayList<>();
-        for (Person person : resultList) {
+                personDTOList.add(new PersonDTO(person));
 
-            personDTOList.add(new PersonDTO(person));
-
+            }
+            return personDTOList;
+        } catch (Exception e) {
+            throw new PersonNotFound("There are no persons living in this city");
         }
-        return personDTOList;
     }
 
     @Override
-    public List<PersonDTO> getAllPersonsWithHobby(String hobby) {
+    public List<PersonDTO> getAllPersonsWithHobby(String hobby) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Person> query = em.createQuery(
+                    "SELECT p FROM Person p join p.hobbies h where h.name = :hobby", Person.class);
+            query.setParameter("hobby", hobby);
 
-        TypedQuery<Person> query = em.createQuery(
-                "SELECT p FROM Person p join p.hobbies h where h.name = :hobby", Person.class);
-        query.setParameter("hobby", hobby);
+            List<Person> personList = query.getResultList();
 
-        List<Person> personList = query.getResultList();
+            List<PersonDTO> personDTOList = new ArrayList<>();
 
-        List<PersonDTO> personDTOList = new ArrayList<>();
+            for (Person person : personList) {
 
-        for (Person person : personList) {
+                personDTOList.add(new PersonDTO(person));
 
-            personDTOList.add(new PersonDTO(person));
+            }
 
+            return personDTOList;
+
+        } catch (Exception e) {
+            throw new PersonNotFound("There are no persons with this hobby");
         }
-
-        return  personDTOList;
 
     }
 
     @Override
-    public PersonDTO deletePerson(int id) {
+    public PersonDTO deletePerson(int id) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
-        Person person = em.find(Person.class,id);
-        determineDeletionProcess(em,person);
+        try{
+        Person person = em.find(Person.class, id);
+        determineDeletionProcess(em, person);
 
         return new PersonDTO(person);
+        
+        } catch (Exception e) {
+            throw new PersonNotFound("The person you want to delete does not exist");
+        }
 
     }
 
     @Override
-    public PersonDTO editPerson(PersonDTO personDTO) {
+    public PersonDTO editPerson(PersonDTO personDTO) throws PersonNotFound, MissingInput {
         EntityManager em = getEntityManager();
 
-        try{
+        try {
+            hasInput(personDTO);
             Person p = em.find(Person.class, personDTO.getId());
             assignDTOValues(p, personDTO);
             createNewOrUseExisitingInfo(em, p);
@@ -141,32 +154,44 @@ public class PersonFacade implements IPersonFacade {
             em.getTransaction().commit();
             deleteUnusedAddress(em);
             return new PersonDTO(p);
-        }   finally {
+            
+        } catch (Exception e) {
+            throw new PersonNotFound("The person you want to edit does not exist");
+            
+        } finally {
             em.close();
         }
     }
 
     @Override
-    public PersonDTO getPersonById(int id) {
+    public PersonDTO getPersonById(int id) throws PersonNotFound {
         EntityManager em = getEntityManager();
-
-        Person person = em.find(Person.class,id);
+        try{
+        Person person = em.find(Person.class, id);
 
         return new PersonDTO(person);
+        } catch (Exception e) {
+            throw new PersonNotFound("The person does not exist");
+            
+        }
 
     }
 
     @Override
-    public PersonDTO getPersonByPhone(String phone) {
+    public PersonDTO getPersonByPhone(String phone) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
-
+        try{
         TypedQuery<Person> query = em.createQuery(
                 "SELECT p FROM Person p join p.phoneNumbers ph where ph.number = :phone", Person.class);
 
         query.setParameter("phone", phone);
 
         return new PersonDTO(query.getSingleResult());
+        } catch (Exception e) {
+            throw new PersonNotFound("The person does not exist");
+            
+        }
 
     }
 
@@ -198,10 +223,10 @@ public class PersonFacade implements IPersonFacade {
         List<Person> existingPersons = q4.getResultList();
 
         for (Address a : addresses) {
-            if (a.getStreet().equals(p.getAddress().getStreet()) &&
-                    p.getAddress().getCityInfo().getZipCode() == a.getCityInfo().getZipCode()) {
+            if (a.getStreet().equals(p.getAddress().getStreet())
+                    && p.getAddress().getCityInfo().getZipCode() == a.getCityInfo().getZipCode()) {
 
-                    p.setAddress(a);
+                p.setAddress(a);
             }
         }
         for (CityInfo c : cities) {
@@ -222,6 +247,7 @@ public class PersonFacade implements IPersonFacade {
             p.setEmail(existingPersons.get(0).getEmail());
         }
     }
+
     private void determineDeletionProcess(EntityManager em, Person person) {
 
         List<Person> sameAddr = new ArrayList();
@@ -245,6 +271,7 @@ public class PersonFacade implements IPersonFacade {
             em.getTransaction().commit();
         }
     }
+
     private void assignDTOValues(Person p, PersonDTO pDTO) {
         CityInfo cityInfo = new CityInfo(pDTO.getZipCode(), pDTO.getCity());
         Address address = new Address(pDTO.getStreet(), cityInfo);
@@ -289,11 +316,24 @@ public class PersonFacade implements IPersonFacade {
         }
     }
 
+    private void hasInput(PersonDTO pDTO) throws MissingInput {
+        if (pDTO.getFirstName().isEmpty()
+                || pDTO.getLastName().isEmpty()
+                || pDTO.getStreet().isEmpty()
+                || pDTO.getCity().isEmpty()
+                || pDTO.getZipCode().isEmpty()
+                || pDTO.getEmail().isEmpty()
+                || pDTO.getPhoneNumbers().size() < 1
+                || pDTO.getHobbies().size() < 1) {
+            throw new MissingInput("All fields must be filled out");
+        }
 
-    public static void main(String[] args) {
+    }
+
+    public static void main(String[] args) throws MissingInput {
 
         Person person = new Person("kadao@mail.dk", "Kenneth", "Rasmussen");
-        Address address = new Address("Smedeløkken 66", new CityInfo(3700, "Rønne"));
+        Address address = new Address("Smedeløkken 66", new CityInfo("3700", "Rønne"));
         List<Hobby> hobbies = new ArrayList<>();
         hobbies.add(new Hobby("Fodbold", "ko lort", "Prutfis", "lort"));
         List<Phone> phones = new ArrayList<>();
@@ -311,6 +351,6 @@ public class PersonFacade implements IPersonFacade {
         PersonFacade.getPersonFacade(emf).addPerson(personDTO);
 
 //
- }
+    }
 
 }
