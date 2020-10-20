@@ -218,6 +218,32 @@ public class PersonResourceTest {
 
 
     }
+    @Test
+    public void TestAddPerson() {
+
+        Person testPerson = new Person("Pelle@mail.dk", "Pelle", "Rasmussen");
+        Address testAddress = new Address("Testvej 4", new CityInfo(666, "Helvede"));
+
+        List<Phone> testPhoneList = new ArrayList<>();
+        Phone testPhone = new Phone("666", "Work");
+        testPhoneList.add(testPhone);
+
+        testPerson.setAddress(testAddress);
+        testPerson.setHobbies(h1);
+        testPerson.setPhoneNumbers(testPhoneList);
+
+        PersonDTO personDTO = new PersonDTO(testPerson);
+
+        given()
+                .contentType("application/json")
+                .body(personDTO)
+                .when()
+                .post("persons")
+                .then()
+                .body("firstName", equalTo("Pelle"));
+
+
+    }
 
 
 
