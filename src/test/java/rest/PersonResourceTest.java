@@ -319,7 +319,7 @@ public class PersonResourceTest {
         }
 
         @Test
-    public void TestExeceptionGetPersonByPhone() {
+         public void testExceptionPersonByPhone() {
 
         given()
                 .contentType("application/json")
@@ -331,6 +331,21 @@ public class PersonResourceTest {
                 .assertThat()
                 .body("message", equalTo("Person with the provided phone number was not found."));
 
+
+        }
+
+        @Test
+    public void testExceptionCountHobbies (){
+
+        given()
+                .contentType("application/json")
+                .get("persons/count/test")
+                .then()
+                .assertThat()
+                .statusCode(404)
+                .and()
+                .assertThat()
+                .body("message", equalTo("There are no persons with this hobby"));
 
         }
 
