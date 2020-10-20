@@ -135,7 +135,7 @@ public class PersonFacade implements IPersonFacade {
         return new PersonDTO(person);
         
         } catch (Exception e) {
-            throw new PersonNotFound("The person you want to delete does not exist");
+            throw new PersonNotFound("Person with the provided ID was not found.");
         }
 
     }
@@ -157,7 +157,7 @@ public class PersonFacade implements IPersonFacade {
             return new PersonDTO(p);
             
         } catch (Exception e) {
-            throw new PersonNotFound("The person you want to edit does not exist");
+            throw new PersonNotFound("Person with the provided ID was not found.");
             
         } finally {
             em.close();
@@ -172,7 +172,7 @@ public class PersonFacade implements IPersonFacade {
 
         return new PersonDTO(person);
         } catch (Exception e) {
-            throw new PersonNotFound("The person does not exist");
+            throw new PersonNotFound("Person with the provided ID was not found.");
             
         }
 
@@ -190,7 +190,7 @@ public class PersonFacade implements IPersonFacade {
 
         return new PersonDTO(query.getSingleResult());
         } catch (Exception e) {
-            throw new PersonNotFound("The person does not exist");
+            throw new PersonNotFound("Person with the provided ID was not found.");
             
         }
 
@@ -236,7 +236,7 @@ public class PersonFacade implements IPersonFacade {
 
         for (Address a : addresses) {
             if (a.getStreet().equals(p.getAddress().getStreet())
-                    && p.getAddress().getCityInfo().getZipCode() == a.getCityInfo().getZipCode()) {
+                    && p.getAddress().getCityInfo().getZipCode().equals(a.getCityInfo().getZipCode())) {
 
                 p.setAddress(a);
             }
