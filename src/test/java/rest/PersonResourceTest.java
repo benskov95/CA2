@@ -1,5 +1,6 @@
 package rest;
 
+import dto.PersonDTO;
 import entities.*;
 import facades.PersonFacade;
 import utils.EMF_Creator;
@@ -16,7 +17,10 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import static org.hamcrest.Matchers.equalTo;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -133,4 +137,35 @@ public class PersonResourceTest {
         .statusCode(HttpStatus.OK_200.getStatusCode())
         .body("count", equalTo(2));   
     }
+    @Test
+    public void testGetAllPersons() {
+        List<PersonDTO> personsList;
+
+       personsList = given()
+                .contentType("application/json")
+                .get("/persons/")
+                .then()
+                .extract().body().jsonPath().getList("" ,PersonDTO.class);
+
+
+        assertThat(personsList.size(), equalTo(2));
+
+
+    }
+    @Test
+    public void testGetPersonByPhone() {
+
+        String phone = p1.getPhoneNumbers().get(0).getNumber();
+
+        given()
+                .contentType("application/json")
+                .get("/persons/phone/{phone}",phone)
+                .then()
+                .assertThat().statusCode(200)
+                .body("firstName", equalTo(p1.getFirstName()));
+
+
+    }
+
+
 }
