@@ -167,5 +167,22 @@ public class PersonResourceTest {
 
     }
 
+    @Test
+    public  void testGetPersonsWithGivenHobbies(){
+
+        String hoppyName = p2.getHobbies().get(0).getName();
+        List<PersonDTO> personDTOList;
+
+        personDTOList = given()
+                .contentType("application/json")
+                .get("/persons/hobby/{hobby}", hoppyName)
+                .then()
+                .extract().body().jsonPath().getList("", PersonDTO.class);
+
+
+        assertThat(personDTOList.size(), equalTo(2));
+    }
+
+
 
 }
