@@ -260,7 +260,42 @@ public class PersonResourceTest {
 
 
     }
+    @Test
+    public void TestDeletePerson(){
 
+        int p_id = p1.getId();
+
+        given()
+                .contentType("application/json")
+                .delete("persons/{id}",p_id)
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .and()
+                .assertThat()
+                .body("id", equalTo(p1.getId()));
+
+        List<PersonDTO> personsList;
+
+        personsList = given()
+                .contentType("application/json")
+                .get("/persons/")
+                .then()
+                .extract().body().jsonPath().getList("" ,PersonDTO.class);
+
+
+        assertThat(personsList.size(), equalTo(1));
 
 
 }
+        @Test
+    public void TestEditPerson() {
+
+
+
+
+        }
+
+
+}
+
