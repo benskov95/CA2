@@ -1,11 +1,14 @@
 package rest;
 
-import entities.RenameMe;
+import entities.*;
+import facades.PersonFacade;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.parsing.Parser;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
@@ -21,15 +24,21 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
-public class RenameMeResourceTest {
+public class PersonResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
-    private static RenameMe r1,r2;
-    
+    private static EntityManagerFactory emf;
+    private static PersonFacade facade;
+    private static Person p1, p2;
+    private static Address a1, a2;
+    private static CityInfo c1;
+    private static List<Phone> phones1, phones2;
+    private static List<Hobby> h1, h2;
+
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
-    private static EntityManagerFactory emf;
+
 
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
@@ -47,6 +56,19 @@ public class RenameMeResourceTest {
         RestAssured.baseURI = SERVER_URL;
         RestAssured.port = SERVER_PORT;
         RestAssured.defaultParser = Parser.JSON;
+
+        emf = EMF_Creator.createEntityManagerFactoryForTest();
+        facade = PersonFacade.getPersonFacade(emf);
+        EntityManager em = emf.createEntityManager();
+        prepareTestPersons();
+        try {
+            em.getTransaction().begin();
+            em.persist(p1);
+            em.persist(p2);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
     
     @AfterAll
@@ -61,42 +83,52 @@ public class RenameMeResourceTest {
     //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
     @BeforeEach
     public void setUp() {
-        EntityManager em = emf.createEntityManager();
-        r1 = new RenameMe("Some txt","More text");
-        r2 = new RenameMe("aaa","bbb");
-        try {
-            em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(r1);
-            em.persist(r2); 
-            em.getTransaction().commit();
-        } finally { 
-            em.close();
-        }
+
+    }
+    public static void prepareTestPersons() {
+
+        phones1 = new ArrayList();
+        phones2 = new ArrayList();
+        h1 = new ArrayList();
+        h2 = new ArrayList();
+
+        p1 = new Person("joe@testmail.dk", "Joe", "Hansen");
+        p2 = new Person("gurli@testmail.dk", "Gurli", "Kofod");
+        c1 = new CityInfo(9999, "Valhalla");
+        a1 = new Address("Troldevej 9", c1);
+        a2 = new Address("Vikingegade 35", c1);
+
+        phones1.add(new Phone("2834928", "home"));
+        phones2.add(new Phone("99483271", "work"));
+        phones2.add(new Phone("12364823", "home"));
+
+        h1.add(new Hobby("Sailing", "sailing.dk", "general", "outdoors"));
+        h1.add(new Hobby("Dancing", "dancing.dk", "general", "indoors"));
+        h2.add(new Hobby("Sailing", "sailing.dk", "general", "outdoors"));
+
+        p1.setAddress(a1);
+        p1.setPhoneNumbers(phones1);
+        p1.setHobbies(h1);
+
+        p2.setAddress(a2);
+        p2.setPhoneNumbers(phones2);
+        p2.setHobbies(h2);
     }
     
     @Test
     public void testServerIsUp() {
         System.out.println("Testing is server UP");
-        given().when().get("/xxx").then().statusCode(200);
+        given().when().get("/persons").then().statusCode(200);
     }
    
     //This test assumes the database contains two rows
-    @Test
-    public void testDummyMsg() throws Exception {
-        given()
-        .contentType("application/json")
-        .get("/xxx/").then()
-        .assertThat()
-        .statusCode(HttpStatus.OK_200.getStatusCode())
-        .body("msg", equalTo("Hello World"));   
-    }
+
     
     @Test
-    public void testCount() throws Exception {
+    public void testHobbyCount() throws Exception {
         given()
         .contentType("application/json")
-        .get("/xxx/count").then()
+        .get("/persons/count/Sailing").then()
         .assertThat()
         .statusCode(HttpStatus.OK_200.getStatusCode())
         .body("count", equalTo(2));   
