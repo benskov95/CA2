@@ -183,6 +183,22 @@ public class PersonResourceTest {
         assertThat(personDTOList.size(), equalTo(2));
     }
 
+    @Test
+    public void testGetPersonsFromGivenCity(){
+
+        String nameOfCity = p1.getAddress().getCityInfo().getCity();
+
+        given()
+                .contentType("application/json")
+                .get("/persons/city/{city}", nameOfCity)
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .and()
+                .body("zipCode", hasItem(9999));
+
+    }
+
 
 
 }
