@@ -79,7 +79,6 @@ public class PersonFacadeTest {
         PersonDTO addedPerson = facade.addPerson(createTestPerson());
         assertEquals(3, facade.getAllPersons().size());
         assertTrue(addedPerson.getCity().equals("Valhalla"));
-        facade.deletePerson(addedPerson.getId());
     }
     
     @Test
