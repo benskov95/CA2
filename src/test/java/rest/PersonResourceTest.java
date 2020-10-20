@@ -244,6 +244,22 @@ public class PersonResourceTest {
 
 
     }
+    @Test
+    public void TestGetPersonById (){
+
+        int p_id = p1.getId();
+
+        given()
+                .contentType("application/json")
+                .get("persons/id/{id}", p_id)
+                .then()
+                .assertThat().statusCode(200)
+                .and()
+                .assertThat()
+                .body("firstName", equalTo(p1.getFirstName()));
+
+
+    }
 
 
 
