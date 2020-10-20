@@ -29,6 +29,9 @@ public class PersonDTO {
         this.city = person.getAddress().getCityInfo().getCity();
     }
 
+    public PersonDTO() {
+    }
+
     public int getId() {
         return id;
     }

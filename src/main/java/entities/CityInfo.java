@@ -5,9 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
+@NamedQuery (name = "CityInfo.deleteAllRows", query = "DELETE FROM CityInfo")
 @Table (name = "cityinfo")
 public class CityInfo implements Serializable {
 

@@ -6,9 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
+@NamedQuery (name = "Phone.deleteAllRows", query = "DELETE FROM Phone")
 @Table (name = "phone")
 public class Phone implements Serializable {
 

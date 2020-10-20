@@ -40,16 +40,7 @@ public class PersonFacadeTest {
     public static void setUpClass() {
        emf = EMF_Creator.createEntityManagerFactoryForTest();
        facade = PersonFacade.getPersonFacade(emf);
-       EntityManager em = emf.createEntityManager();
        prepareTestPersons();
-       try {
-           em.getTransaction().begin();
-           em.persist(p1);
-           em.persist(p2);
-           em.getTransaction().commit();
-       } finally {
-           em.close();
-       }
    }
 
     @AfterAll
@@ -58,10 +49,23 @@ public class PersonFacadeTest {
 
     @BeforeEach
     public void setUp() {
+       EntityManager em = emf.createEntityManager();
+       try {
+           em.getTransaction().begin();
+           em.createNamedQuery("Person.deleteAllRows").executeUpdate();
+           em.createNamedQuery("Address.deleteAllRows").executeUpdate();
+           em.createNamedQuery("CityInfo.deleteAllRows").executeUpdate();
+           em.createNamedQuery("Phone.deleteAllRows").executeUpdate();
+           em.persist(p1);
+           em.persist(p2);
+           em.getTransaction().commit();
+       } finally {
+           em.close();
+       }
     }
 
     @AfterEach
-    public void tearDown() {
+    public void tearDown() throws PersonNotFound {
     }
     
     @Test
@@ -72,13 +76,7 @@ public class PersonFacadeTest {
     
     @Test
     public void testAddPerson() throws MissingInput, PersonNotFound {
-        PersonDTO pDTO = new PersonDTO(p1);
-        pDTO.setFirstName("Leif");
-        pDTO.setLastName("Grågård");
-        pDTO.setEmail("leif@testmail.dk");
-        pDTO.setPhoneNumbers(new ArrayList());
-        pDTO.getPhoneNumbers().add(new Phone("84772323", "work"));
-        PersonDTO addedPerson = facade.addPerson(pDTO);
+        PersonDTO addedPerson = facade.addPerson(createTestPerson());
         assertEquals(3, facade.getAllPersons().size());
         assertTrue(addedPerson.getCity().equals("Valhalla"));
         facade.deletePerson(addedPerson.getId());
@@ -109,43 +107,44 @@ public class PersonFacadeTest {
     }
     
     @Test
-    public void testDeletePerson() {
-//        PersonDTO deleted = facade.deletePerson(p1.getId());
-//        PersonNotFound thrown
-//                = assertThrows(PersonNotFound.class, () -> {
-//                    facade.getPerson(deleted.getId());
-//                });
-//        assertTrue(thrown.getMessage().equals("Person with the provided ID was not found."));
+    public void testDeletePerson() throws PersonNotFound, MissingInput {
+        PersonDTO deleted = facade.deletePerson(p1.getId());
+        PersonNotFound thrown
+                = assertThrows(PersonNotFound.class, () -> {
+                    facade.getPersonById(deleted.getId());
+                });
+        System.out.println(thrown.getMessage());
+        assertTrue(thrown.getMessage().equals("Person with the provided ID was not found."));
+    }
+
+    
+    @Test
+    public void testEditPerson() throws PersonNotFound, MissingInput {
+        assertTrue(p1.getFirstName().equals("Joe"));
+        p1.setFirstName("Anton");
+        facade.editPerson(new PersonDTO(p1));
+        assertTrue(facade.getPersonById(p1.getId()).getFirstName().equals("Anton"));
     }
     
     @Test
-    public void testEditPerson() {
-//        assertTrue(p1.getFirstName().equals("Erik"));
-//        p1.setFirstName("Anton");
-//        p1.setLastName("Jones");
-//        facade.editPerson(new PersonDTO(p1));
-//        assertTrue(facade.getPerson(p1.getId()).getFirstName().equals("Anton"));
+    public void testPersonNotFoundException() {
+        PersonNotFound thrown
+                = assertThrows(PersonNotFound.class, () -> {
+                    facade.getPersonById(500);
+                });
+        assertTrue(thrown.getMessage().equals("Person with the provided ID was not found."));
     }
     
-//    @Test
-//    public void testPersonNotFoundException() {
-//        PersonNotFound thrown
-//                = assertThrows(PersonNotFound.class, () -> {
-//                    facade.getPerson(500);
-//                });
-//        assertTrue(thrown.getMessage().equals("Person with the provided ID was not found."));
-//    }
-//    
-//    @Test
-//    public void testMissingInputException() {
-//        PersonDTO pTest = new PersonDTO();
-//        pTest.setFirstName("Testerman");
-//        MissingInput thrown
-//                = assertThrows(MissingInput.class, () -> {
-//                    facade.addPerson(pTest);
-//                });
-//        assertTrue(thrown.getMessage().equals("First name, last name, phone or address info is missing."));
-//    }
+    @Test
+    public void testMissingInputException() {
+        PersonDTO pTest = new PersonDTO(p1);
+        pTest.setFirstName("");
+        MissingInput thrown
+                = assertThrows(MissingInput.class, () -> {
+                    facade.addPerson(pTest);
+                });
+        assertTrue(thrown.getMessage().equals("All fields must be filled out"));
+    }
     
     public static void prepareTestPersons() {
     phones1 = new ArrayList();
@@ -175,5 +174,15 @@ public class PersonFacadeTest {
     p2.setPhoneNumbers(phones2);
     p2.setHobbies(h2);
 }
+    
+    private PersonDTO createTestPerson() {
+        PersonDTO pDTO = new PersonDTO(p2);
+        pDTO.setFirstName("Leif");
+        pDTO.setLastName("Grågård");
+        pDTO.setEmail("leif@testmail.dk");
+        pDTO.setPhoneNumbers(new ArrayList());
+        pDTO.getPhoneNumbers().add(new Phone("84772323", "work"));
+        return pDTO;
+    }
 
 }
