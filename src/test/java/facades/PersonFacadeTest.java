@@ -56,6 +56,7 @@ public class PersonFacadeTest {
            em.createNamedQuery("Address.deleteAllRows").executeUpdate();
            em.createNamedQuery("CityInfo.deleteAllRows").executeUpdate();
            em.createNamedQuery("Phone.deleteAllRows").executeUpdate();
+           em.createNamedQuery("Hobby.deleteAllRows").executeUpdate();
            em.persist(p1);
            em.persist(p2);
            em.getTransaction().commit();
@@ -162,7 +163,7 @@ public class PersonFacadeTest {
 
     h1.add(new Hobby("Sailing", "sailing.dk", "general", "outdoors"));
     h1.add(new Hobby("Dancing", "dancing.dk", "general", "indoors"));
-    h2.add(new Hobby("Sailing", "sailing.dk", "general", "outdoors"));
+    h2.add(new Hobby("Jogging", "jogging.dk", "general", "outdoors"));
 
     p1.setAddress(a1);
     p1.setPhoneNumbers(phones1);

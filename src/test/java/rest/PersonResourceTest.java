@@ -90,6 +90,7 @@ public class PersonResourceTest {
             em.createNamedQuery("Address.deleteAllRows").executeUpdate();
             em.createNamedQuery("CityInfo.deleteAllRows").executeUpdate();
             em.createNamedQuery("Phone.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Hobby.deleteAllRows").executeUpdate();
             em.persist(p1);
             em.persist(p2);
             em.getTransaction().commit();
@@ -117,7 +118,7 @@ public class PersonResourceTest {
 
         h1.add(new Hobby("Sailing", "sailing.dk", "general", "outdoors"));
         h1.add(new Hobby("Dancing", "dancing.dk", "general", "indoors"));
-        h2.add(new Hobby("Sailing", "sailing.dk", "general", "outdoors"));
+        h2.add(new Hobby("Jogging", "jogging.dk", "general", "outdoors"));
 
         p1.setAddress(a1);
         p1.setPhoneNumbers(phones1);
@@ -144,7 +145,7 @@ public class PersonResourceTest {
         .get("/persons/count/Sailing").then()
         .assertThat()
         .statusCode(HttpStatus.OK_200.getStatusCode())
-        .body("count", equalTo(2));   
+        .body("count", equalTo(1));   
     }
     @Test
     public void testGetAllPersons() {
@@ -179,17 +180,17 @@ public class PersonResourceTest {
     @Test
     public  void testGetPersonsWithGivenHobbies(){
 
-        String hoppyName = p2.getHobbies().get(0).getName();
+        String hobbyName = p2.getHobbies().get(0).getName();
         List<PersonDTO> personDTOList;
 
         personDTOList = given()
                 .contentType("application/json")
-                .get("/persons/hobby/{hobby}", hoppyName)
+                .get("/persons/hobby/{hobby}", hobbyName)
                 .then()
                 .extract().body().jsonPath().getList("", PersonDTO.class);
 
 
-        assertThat(personDTOList.size(), equalTo(2));
+        assertThat(personDTOList.size(), equalTo(1));
     }
 
     @Test
