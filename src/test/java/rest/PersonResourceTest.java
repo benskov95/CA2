@@ -346,7 +346,7 @@ public class PersonResourceTest {
                 .statusCode(404)
                 .and()
                 .assertThat()
-                .body("message", equalTo("There are no persons with this hobby"));
+                .body("message", equalTo("No persons with this hobby"));
 
         }
         @Test
