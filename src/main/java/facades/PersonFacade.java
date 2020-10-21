@@ -79,61 +79,63 @@ public class PersonFacade implements IPersonFacade {
     public List<PersonDTO> getAllPersonsFromCity(String city) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
-        try {
-            TypedQuery<Person> query = em.createQuery(
-                    "SELECT p FROM Person p join p.address.cityInfo c where c.city = :city", Person.class);
-            query.setParameter("city", city);
-            List<Person> resultList = query.getResultList();
 
-            List<PersonDTO> personDTOList = new ArrayList<>();
-            for (Person person : resultList) {
+        TypedQuery<Person> query = em.createQuery(
+                "SELECT p FROM Person p join p.address.cityInfo c where c.city = :city", Person.class);
+        query.setParameter("city", city);
+        List<Person> resultList = query.getResultList();
 
-                personDTOList.add(new PersonDTO(person));
-
-            }
-            return personDTOList;
-        } catch (Exception e) {
+        if (resultList.size() == 0) {
             throw new PersonNotFound("There are no persons living in this city");
         }
+        List<PersonDTO> personDTOList = new ArrayList<>();
+        for (Person person : resultList) {
+
+            personDTOList.add(new PersonDTO(person));
+
+        }
+        return personDTOList;
     }
+
 
     @Override
     public List<PersonDTO> getAllPersonsWithHobby(String hobby) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
-        try {
-            TypedQuery<Person> query = em.createQuery(
-                    "SELECT p FROM Person p join p.hobbies h where h.name = :hobby", Person.class);
-            query.setParameter("hobby", hobby);
 
-            List<Person> personList = query.getResultList();
+        TypedQuery<Person> query = em.createQuery(
+                "SELECT p FROM Person p join p.hobbies h where h.name = :hobby", Person.class);
+        query.setParameter("hobby", hobby);
 
+        List<Person> personList = query.getResultList();
+
+        if (personList.size() == 0) {
+            throw new PersonNotFound("No persons with this hobby");
+
+        } else {
             List<PersonDTO> personDTOList = new ArrayList<>();
 
             for (Person person : personList) {
-
                 personDTOList.add(new PersonDTO(person));
 
+
             }
-
             return personDTOList;
-
-        } catch (Exception e) {
-            throw new PersonNotFound("There are no persons with this hobby");
         }
 
     }
+
 
     @Override
     public PersonDTO deletePerson(int id) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
-        try{
-        Person person = em.find(Person.class, id);
-        determineDeletionProcess(em, person);
+        try {
+            Person person = em.find(Person.class, id);
+            determineDeletionProcess(em, person);
 
-        return new PersonDTO(person);
-        
+            return new PersonDTO(person);
+
         } catch (Exception e) {
             throw new PersonNotFound("Person with the provided ID was not found.");
         }
@@ -144,7 +146,7 @@ public class PersonFacade implements IPersonFacade {
     public PersonDTO editPerson(PersonDTO personDTO) throws PersonNotFound, MissingInput {
         EntityManager em = getEntityManager();
         Person p = em.find(Person.class, personDTO.getId());
-        if (p == null){
+        if (p == null) {
             throw new PersonNotFound("Person with the provided ID was not found.");
         }
         try {
@@ -158,7 +160,7 @@ public class PersonFacade implements IPersonFacade {
             deleteUnusedAddress(em);
             return new PersonDTO(p);
 
-        }finally {
+        } finally {
             em.close();
         }
     }
@@ -166,13 +168,13 @@ public class PersonFacade implements IPersonFacade {
     @Override
     public PersonDTO getPersonById(int id) throws PersonNotFound {
         EntityManager em = getEntityManager();
-        try{
-        Person person = em.find(Person.class, id);
+        try {
+            Person person = em.find(Person.class, id);
 
-        return new PersonDTO(person);
+            return new PersonDTO(person);
         } catch (Exception e) {
             throw new PersonNotFound("Person with the provided ID was not found.");
-            
+
         }
 
     }
@@ -181,20 +183,20 @@ public class PersonFacade implements IPersonFacade {
     public PersonDTO getPersonByPhone(String phone) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
-        try{
-        TypedQuery<Person> query = em.createQuery(
-                "SELECT p FROM Person p join p.phoneNumbers ph where ph.number = :phone", Person.class);
+        try {
+            TypedQuery<Person> query = em.createQuery(
+                    "SELECT p FROM Person p join p.phoneNumbers ph where ph.number = :phone", Person.class);
 
-        query.setParameter("phone", phone);
+            query.setParameter("phone", phone);
 
-        return new PersonDTO(query.getSingleResult());
+            return new PersonDTO(query.getSingleResult());
         } catch (Exception e) {
             throw new PersonNotFound("Person with the provided phone number was not found.");
-            
+
         }
 
     }
-    
+
     public List<HobbyDTO> getAllHobbies() {
         EntityManager em = getEntityManager();
         TypedQuery q = em.createQuery("SELECT h FROM Hobby h", Hobby.class);
@@ -363,5 +365,5 @@ public class PersonFacade implements IPersonFacade {
 ////
 // }
 
-}
+    }
 }
