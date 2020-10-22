@@ -243,7 +243,7 @@ public class PersonFacade implements IPersonFacade {
             }
         }
         for (CityInfo c : cities) {
-            if (c.getCity().equals(p.getAddress().getCityInfo().getCity())) {
+            if (c.getZipCode().equals(p.getAddress().getCityInfo().getZipCode())) {
                 p.getAddress().setCityInfo(c);
             }
         }
