@@ -21,10 +21,10 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(cors.CorsFilter.class);
+        resources.add(exceptions.CityNotFoundMapper.class);
         resources.add(exceptions.GenericExceptionMapper.class);
         resources.add(exceptions.MissingInputMapper.class);
         resources.add(exceptions.PersonNotFoundMapper.class);
-        resources.add(exceptions.CityNotFoundMapper.class);
         resources.add(exceptions.AlreadyExistMapper.class);
         resources.add(org.glassfish.jersey.server.wadl.internal.WadlResource.class);
         resources.add(rest.CityInfoResource.class);
