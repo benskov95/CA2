@@ -397,7 +397,7 @@ public class PersonResourceTest {
                     .assertThat()
                     .body("message", equalTo("City and Zipcode doesnt not match"));
 
-        
+
         }
 
 
