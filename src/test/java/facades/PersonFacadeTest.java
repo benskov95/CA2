@@ -6,6 +6,7 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
+import exceptions.CityNotFound;
 import exceptions.MissingInput;
 import exceptions.PersonNotFound;
 import utils.EMF_Creator;
@@ -76,7 +77,7 @@ public class PersonFacadeTest {
     }
     
     @Test
-    public void testAddPerson() throws MissingInput, PersonNotFound {
+    public void testAddPerson() throws MissingInput,  CityNotFound {
         PersonDTO addedPerson = facade.addPerson(createTestPerson());
         assertEquals(3, facade.getAllPersons().size());
         assertTrue(addedPerson.getCity().equals("Valhalla"));
@@ -118,7 +119,7 @@ public class PersonFacadeTest {
 
     
     @Test
-    public void testEditPerson() throws PersonNotFound, MissingInput {
+    public void testEditPerson() throws PersonNotFound, MissingInput, CityNotFound {
         assertTrue(p1.getFirstName().equals("Joe"));
         p1.setFirstName("Anton");
         facade.editPerson(new PersonDTO(p1));

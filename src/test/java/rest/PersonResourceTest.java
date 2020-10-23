@@ -91,6 +91,8 @@ public class PersonResourceTest {
             em.createNamedQuery("CityInfo.deleteAllRows").executeUpdate();
             em.createNamedQuery("Phone.deleteAllRows").executeUpdate();
             em.createNamedQuery("Hobby.deleteAllRows").executeUpdate();
+            CityInfo city =  new CityInfo("666", "Helvede");
+            em.persist(city);
             em.persist(p1);
             em.persist(p2);
             em.getTransaction().commit();
@@ -127,6 +129,8 @@ public class PersonResourceTest {
         p2.setAddress(a2);
         p2.setPhoneNumbers(phones2);
         p2.setHobbies(h2);
+
+
     }
     
     @Test

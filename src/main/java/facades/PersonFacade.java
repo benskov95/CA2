@@ -3,6 +3,7 @@ package facades;
 import dto.HobbyDTO;
 import dto.PersonDTO;
 import entities.*;
+import exceptions.CityNotFound;
 import exceptions.MissingInput;
 import exceptions.PersonNotFound;
 
@@ -56,13 +57,14 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public PersonDTO addPerson(PersonDTO personDTO) throws MissingInput {
+    public PersonDTO addPerson(PersonDTO personDTO) throws MissingInput, CityNotFound {
 
         EntityManager em = getEntityManager();
 
         try {
             hasInput(personDTO);
             Person newPerson = preparePerson(personDTO);
+            checkIfExist(em, newPerson);
             createNewOrUseExisitingInfo(em, newPerson);
             em.getTransaction().begin();
             em.persist(newPerson);
@@ -73,6 +75,36 @@ public class PersonFacade implements IPersonFacade {
         } finally {
             em.close();
         }
+    }
+
+    private void checkIfExist(EntityManager em, Person newPerson) throws MissingInput {
+        Query q1 = em.createQuery("SELECT p FROM Person p where p.email = :email");
+        q1.setParameter("email", newPerson.getEmail());
+
+
+        for (int i = 0; i < newPerson.getPhoneNumbers().size(); i++) {
+            Query q2 = em.createQuery("SELECT pn FROM Phone pn where pn.number = :number");
+            q2.setParameter("number", newPerson.getPhoneNumbers().get(i).getNumber());
+            if(q2.getResultList().size() > 0){
+                throw new MissingInput("Phone number already exist");
+            }
+        }
+
+        if(q1.getResultList().size() > 0){
+            throw new MissingInput("User with that email is already in use");
+
+        }
+
+        for (int i = 0; i < newPerson.getHobbies().size(); i++){
+            Query q3 = em.createQuery("SELECT h from Hobby  h WHERE h.name = :hobbyName");
+            q3.setParameter("hobbyName", newPerson.getHobbies().get(i).getName());
+            if(q3.getResultList().size() == 0){
+                throw new MissingInput("Hobby doesnt exist");
+            }
+
+        }
+
+
     }
 
     @Override
@@ -143,7 +175,7 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public PersonDTO editPerson(PersonDTO personDTO) throws PersonNotFound, MissingInput {
+    public PersonDTO editPerson(PersonDTO personDTO) throws PersonNotFound, MissingInput, CityNotFound {
         EntityManager em = getEntityManager();
         Person p = em.find(Person.class, personDTO.getId());
         if (p == null) {
@@ -224,12 +256,26 @@ public class PersonFacade implements IPersonFacade {
         return newPerson;
     }
 
-    private void createNewOrUseExisitingInfo(EntityManager em, Person p) {
+    private void createNewOrUseExisitingInfo(EntityManager em, Person p) throws CityNotFound {
         Query q1 = em.createQuery("SELECT a FROM Address a");
         Query q2 = em.createQuery("SELECT c FROM CityInfo c");
         Query q3 = em.createQuery("SELECT h FROM Hobby h");
         Query q4 = em.createQuery("SELECT p FROM Person p WHERE p.email = :email");
+        Query q5 = em.createQuery("SELECT z FROM CityInfo z WHERE z.zipCode = :zipcode");
+        Query q6 = em.createQuery("SELECT c FROM CityInfo c WHERE c.city = :city");
+
         q4.setParameter("email", p.getEmail());
+        q5.setParameter("zipcode", p.getAddress().getCityInfo().getZipCode());
+        q6.setParameter("city", p.getAddress().getCityInfo().getCity());
+
+
+
+
+        if (q5.getResultList().isEmpty() || q6.getResultList().isEmpty()){
+            throw new CityNotFound("City and Zipcode doesnt not match");
+        }
+
+
         List<Address> addresses = q1.getResultList();
         List<CityInfo> cities = q2.getResultList();
         List<Hobby> hobbies = q3.getResultList();
@@ -256,9 +302,11 @@ public class PersonFacade implements IPersonFacade {
                 }
             }
         }
-        if (existingPersons.size() > 0) {
+        if (existingPersons.size() > 0){
             p.setEmail(existingPersons.get(0).getEmail());
-        }
+            }
+
+
     }
 
     private void determineDeletionProcess(EntityManager em, Person person) {

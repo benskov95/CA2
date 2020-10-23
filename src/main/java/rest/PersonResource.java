@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.HobbyDTO;
 import dto.PersonDTO;
+import exceptions.CityNotFound;
 import exceptions.MissingInput;
 import exceptions.PersonNotFound;
 import facades.PersonFacade;
@@ -82,7 +83,7 @@ public class PersonResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String addPerson(String person) throws MissingInput {
+    public String addPerson(String person) throws MissingInput, CityNotFound {
         PersonDTO personDTO = GSON.fromJson(person, PersonDTO.class);
         personDTO = FACADE.addPerson(personDTO);
         return new Gson().toJson(personDTO);
@@ -91,7 +92,7 @@ public class PersonResource {
     @PUT
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String editPerson(@PathParam("id") int id, String person) throws PersonNotFound, MissingInput {
+    public String editPerson(@PathParam("id") int id, String person) throws PersonNotFound, MissingInput, CityNotFound {
         PersonDTO personDTO = GSON.fromJson(person, PersonDTO.class);
         personDTO.setId(id);
         personDTO = FACADE.editPerson(personDTO);
