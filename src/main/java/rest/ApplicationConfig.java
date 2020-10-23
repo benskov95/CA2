@@ -25,6 +25,7 @@ public class ApplicationConfig extends Application {
         resources.add(exceptions.MissingInputMapper.class);
         resources.add(exceptions.PersonNotFoundMapper.class);
         resources.add(exceptions.CityNotFoundMapper.class);
+        resources.add(exceptions.AlreadyExist.class);
         resources.add(org.glassfish.jersey.server.wadl.internal.WadlResource.class);
         resources.add(rest.CityInfoResource.class);
         resources.add(rest.PersonResource.class);
