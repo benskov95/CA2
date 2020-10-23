@@ -145,6 +145,17 @@ public class PersonFacadeTest {
                 });
         assertTrue(thrown.getMessage().equals("All fields must be filled out"));
     }
+    @Test
+    public void testCityNotFoundExeception(){
+        PersonDTO testPerson = createTestPerson();
+        testPerson.setCity("TestCity");
+        CityNotFound thrown
+                = assertThrows(CityNotFound.class, () -> {
+            facade.addPerson(testPerson);
+        });
+        assertTrue(thrown.getMessage().equals("City and Zipcode doesnt not match"));
+
+    }
     
     public static void prepareTestPersons() {
     phones1 = new ArrayList();
