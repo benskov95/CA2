@@ -79,9 +79,15 @@ public class PersonFacade implements IPersonFacade {
     }
 
     private void checkIfExist(EntityManager em, Person newPerson) throws MissingInput, AlreadyExist {
+
         Query q1 = em.createQuery("SELECT p FROM Person p where p.email = :email");
         q1.setParameter("email", newPerson.getEmail());
 
+
+        if(q1.getResultList().size() > 0){
+            throw new AlreadyExist("User with that email is already in use");
+
+        }
 
         for (int i = 0; i < newPerson.getPhoneNumbers().size(); i++) {
             Query q2 = em.createQuery("SELECT pn FROM Phone pn where pn.number = :number");
@@ -89,11 +95,6 @@ public class PersonFacade implements IPersonFacade {
             if(q2.getResultList().size() > 0){
                 throw new AlreadyExist("Phone number already exist");
             }
-        }
-
-        if(q1.getResultList().size() > 0){
-            throw new AlreadyExist("User with that email is already in use");
-
         }
 
         for (int i = 0; i < newPerson.getHobbies().size(); i++){

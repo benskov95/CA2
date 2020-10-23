@@ -369,6 +369,38 @@ public class PersonResourceTest {
 
 
         }
+        @Test
+            public void testAlreadyExist(){
+
+            given()
+                    .contentType("application/json")
+                    .body(new PersonDTO(p1))
+                    .post("/persons/")
+                    .then()
+                    .assertThat()
+                    .body("message", equalTo("User with that email is already in use"));
+
+        }
+        @Test
+            public void testCityNotFound(){
+
+            PersonDTO testP = new PersonDTO(p1);
+            testP.getPhoneNumbers().get(0).setNumber("66666");
+            testP.setEmail("Test@mail.com");
+            testP.setCity("TEST CITY");
+
+            given()
+                    .contentType("application/json")
+                    .body(testP)
+                    .post("/persons/")
+                    .then()
+                    .assertThat()
+                    .body("message", equalTo("City and Zipcode doesnt not match"));
+
+        
+        }
+
+
 
 
 }
