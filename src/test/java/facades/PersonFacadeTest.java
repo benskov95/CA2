@@ -6,7 +6,7 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
-import exceptions.AlreadyExist;
+import exceptions.AlreadyExists;
 import exceptions.CityNotFound;
 import exceptions.MissingInput;
 import exceptions.PersonNotFound;
@@ -78,7 +78,7 @@ public class PersonFacadeTest {
     }
     
     @Test
-    public void testAddPerson() throws MissingInput, CityNotFound, AlreadyExist {
+    public void testAddPerson() throws MissingInput, CityNotFound, AlreadyExists {
         PersonDTO addedPerson = facade.addPerson(createTestPerson());
         assertEquals(3, facade.getAllPersons().size());
         assertTrue(addedPerson.getCity().equals("Valhalla"));
@@ -154,7 +154,7 @@ public class PersonFacadeTest {
                 = assertThrows(CityNotFound.class, () -> {
             facade.addPerson(testPerson);
         });
-        assertTrue(thrown.getMessage().equals("City and Zipcode doesnt not match"));
+        assertTrue(thrown.getMessage().equals("City and Zipcode do not match"));
 
     }
     @Test
@@ -162,11 +162,11 @@ public class PersonFacadeTest {
         PersonDTO testPerson = createTestPerson();
         testPerson.setEmail("gurli@testmail.dk");
 
-        AlreadyExist thrown
-                = assertThrows(AlreadyExist.class, () -> {
+        AlreadyExists thrown
+                = assertThrows(AlreadyExists.class, () -> {
                     facade.addPerson(testPerson);
         });
-        assertTrue(thrown.getMessage().equals("User with that email is already in use"));
+        assertTrue(thrown.getMessage().equals("The provided email is unavailable"));
     }
     
     public static void prepareTestPersons() {

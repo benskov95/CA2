@@ -3,7 +3,7 @@ package facades;
 import dto.HobbyDTO;
 import dto.PersonDTO;
 import entities.*;
-import exceptions.AlreadyExist;
+import exceptions.AlreadyExists;
 import exceptions.CityNotFound;
 import exceptions.MissingInput;
 import exceptions.PersonNotFound;
@@ -58,7 +58,7 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public PersonDTO addPerson(PersonDTO personDTO) throws MissingInput, CityNotFound, AlreadyExist {
+    public PersonDTO addPerson(PersonDTO personDTO) throws MissingInput, CityNotFound, AlreadyExists {
 
         EntityManager em = getEntityManager();
 
@@ -78,14 +78,14 @@ public class PersonFacade implements IPersonFacade {
         }
     }
 
-    private void checkIfExist(EntityManager em, Person newPerson) throws MissingInput, AlreadyExist {
+    private void checkIfExist(EntityManager em, Person newPerson) throws MissingInput, AlreadyExists {
 
         Query q1 = em.createQuery("SELECT p FROM Person p where p.email = :email");
         q1.setParameter("email", newPerson.getEmail());
 
 
         if(q1.getResultList().size() > 0){
-            throw new AlreadyExist("User with that email is already in use");
+            throw new AlreadyExists("The provided email is unavailable");
 
         }
 
@@ -93,7 +93,7 @@ public class PersonFacade implements IPersonFacade {
             Query q2 = em.createQuery("SELECT pn FROM Phone pn where pn.number = :number");
             q2.setParameter("number", newPerson.getPhoneNumbers().get(i).getNumber());
             if(q2.getResultList().size() > 0){
-                throw new AlreadyExist("Phone number already exist");
+                throw new AlreadyExists("One or more of the provided phone numbers are unavailable");
             }
         }
 
@@ -101,7 +101,7 @@ public class PersonFacade implements IPersonFacade {
             Query q3 = em.createQuery("SELECT h from Hobby  h WHERE h.name = :hobbyName");
             q3.setParameter("hobbyName", newPerson.getHobbies().get(i).getName());
             if(q3.getResultList().size() == 0){
-                throw new MissingInput("Hobby doesnt exist");
+                throw new MissingInput("Hobby does not exist in the database.");
             }
 
         }
@@ -274,7 +274,7 @@ public class PersonFacade implements IPersonFacade {
 
 
         if (q5.getResultList().isEmpty() || q6.getResultList().isEmpty()){
-            throw new CityNotFound("City and Zipcode doesnt not match");
+            throw new CityNotFound("City and Zipcode do not match");
         }
 
 

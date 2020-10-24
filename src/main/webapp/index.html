@@ -15,6 +15,7 @@
             <div class="row">
                 <div class="col">
                     <h1>CA2 Person API (Class: D, Group: 8)</h1>
+                    <a href="https://docs.google.com/document/d/1YrXxiVJq0c3yl19CwZR4nubUUooywH5_NurTKHFI7Zg/edit" style="font-size: 25px">API documentation (google doc)</a><br>
                     <a href="https://docs.google.com/document/d/1VvLalzRVIndNdb0vi9fIZX4nzEf-hyOMjapeHc8xUF0/edit" style="font-size: 25px">Project Diary</a><br><br>
                     <table class="table table-bordered">
                         <thead>
@@ -67,14 +68,14 @@
                                 <td>api/persons</td>
                                 <td>person(1)</td>
                                 <td>person(1)</td>
-                                <td>(e2)</td>
+                                <td>(e2), (e4), (e5)</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;">PUT</td>
                                 <td>api/persons/{id}</td>
                                 <td>person(1)</td>
                                 <td>person(1</td>
-                                <td>(e2)</td>
+                                <td>(e2), (e4), (e5)</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;">DELETE</td>
@@ -117,15 +118,15 @@
                         “firstName” : String,<br>
                         “lastName” : String,<br>
                         “phone” : [{“number”: String, “description”: String},....],<br>
-                        “hobbies”: [{“name”: String, “description”: String}, ....],<br>
+                        “hobbies”: [{“name”: String, “category”: String, "type": String} ....],<br>
                         “street” : String,<br>
                         “city”: String,<br>
-                        “zip” : Number<br>
+                        “zipCode” : String<br>
                         }<br><br>
 
                         zipcode(2):
                         {<br>
-                        “zipcode” : Number,<br>
+                        “zipCode” : String,<br>
                         “city” : String<br>
                         }<br><br>
 
@@ -147,7 +148,12 @@
                         (e2):<br>
                         { status : 404, “message”: “All fields must be filled out” }<br><br>
                         (e3):<br>
-                        { status : 500, “message”: “Internal server error” }
+                        { status : 500, “message”: “Internal server error” }<br><br>
+                        (e4):<br>
+                        { status : 404, "message": "The provided x is unavailable.” }<br>
+                        <i>x = email / phone number(s)<br><br></i>
+                        (e5):<br>
+                        { status : 404, "message": "City and ZipCode do not match” }<br>
                     </div>
                 </div>
             </div>

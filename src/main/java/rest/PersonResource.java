@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.HobbyDTO;
 import dto.PersonDTO;
-import exceptions.AlreadyExist;
+import exceptions.AlreadyExists;
 import exceptions.CityNotFound;
 import exceptions.MissingInput;
 import exceptions.PersonNotFound;
@@ -84,7 +84,7 @@ public class PersonResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String addPerson(String person) throws MissingInput, CityNotFound, AlreadyExist {
+    public String addPerson(String person) throws MissingInput, CityNotFound, AlreadyExists {
         PersonDTO personDTO = GSON.fromJson(person, PersonDTO.class);
         personDTO = FACADE.addPerson(personDTO);
         return new Gson().toJson(personDTO);
