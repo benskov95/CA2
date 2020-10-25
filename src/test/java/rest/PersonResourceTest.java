@@ -370,7 +370,7 @@ public class PersonResourceTest {
 
         }
         @Test
-            public void testAlreadyExist(){
+            public void testAlreadyExists(){
 
             given()
                     .contentType("application/json")
@@ -378,7 +378,7 @@ public class PersonResourceTest {
                     .post("/persons/")
                     .then()
                     .assertThat()
-                    .body("message", equalTo("User with that email is already in use"));
+                    .body("message", equalTo("The provided email is unavailable"));
 
         }
         @Test
@@ -395,7 +395,7 @@ public class PersonResourceTest {
                     .post("/persons/")
                     .then()
                     .assertThat()
-                    .body("message", equalTo("City and Zipcode doesnt not match"));
+                    .body("message", equalTo("City and Zipcode do not match"));
 
 
         }

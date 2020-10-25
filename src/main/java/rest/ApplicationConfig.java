@@ -21,7 +21,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(cors.CorsFilter.class);
-        resources.add(exceptions.AlreadyExistMapper.class);
+        resources.add(exceptions.AlreadyExistsMapper.class);
         resources.add(exceptions.CityNotFoundMapper.class);
         resources.add(exceptions.GenericExceptionMapper.class);
         resources.add(exceptions.MissingInputMapper.class);

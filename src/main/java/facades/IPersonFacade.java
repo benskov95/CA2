@@ -3,7 +3,7 @@ package facades;
 import dto.PersonDTO;
 
 import entities.Person;
-import exceptions.AlreadyExist;
+import exceptions.AlreadyExists;
 import exceptions.CityNotFound;
 import exceptions.MissingInput;
 import exceptions.PersonNotFound;
@@ -13,7 +13,7 @@ public interface IPersonFacade {
 
     public List<PersonDTO> getAllPersons ();
     public PersonDTO getPersonByPhone(String phone) throws PersonNotFound;
-    public PersonDTO addPerson (PersonDTO personDTO) throws MissingInput, PersonNotFound, CityNotFound, AlreadyExist;
+    public PersonDTO addPerson (PersonDTO personDTO) throws MissingInput, PersonNotFound, CityNotFound, AlreadyExists;
     public List<PersonDTO> getAllPersonsFromCity (String city) throws PersonNotFound;
     public List<PersonDTO> getAllPersonsWithHobby (String hobby) throws PersonNotFound;
     public PersonDTO deletePerson (int id) throws PersonNotFound;

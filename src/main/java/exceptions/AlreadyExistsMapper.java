@@ -12,12 +12,12 @@ import java.util.logging.Logger;
 
 
 @Provider
-public class AlreadyExistMapper implements ExceptionMapper<AlreadyExist>
+public class AlreadyExistsMapper implements ExceptionMapper<AlreadyExists>
 {
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();   
     @Override
-    public Response toResponse(AlreadyExist ex) {
-       Logger.getLogger(AlreadyExistMapper.class.getName())
+    public Response toResponse(AlreadyExists ex) {
+       Logger.getLogger(AlreadyExistsMapper.class.getName())
            .log(Level.SEVERE, null, ex);
        ExceptionDTO err = new ExceptionDTO(404,ex.getMessage());
        return Response

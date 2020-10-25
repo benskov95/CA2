@@ -3,13 +3,161 @@
     <head>
         <title>CA2 API Bornholm</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     </head>
-    <body style="text-align: center; margin-top: 300px">
-        <h1>CA2 Person API (Class: D, Group: 8)</h1>
-        <br>
-        <br>
-        <a href="https://docs.google.com/document/d/1YrXxiVJq0c3yl19CwZR4nubUUooywH5_NurTKHFI7Zg/edit" style="font-size: 30px">API Documentation</a>
-        <br>
-        <a href="https://docs.google.com/document/d/1VvLalzRVIndNdb0vi9fIZX4nzEf-hyOMjapeHc8xUF0/edit" style="font-size: 30px">Project Diary</a>
+
+    <body style="text-align: center;">
+
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1>CA2 Person API (Class: D, Group: 8)</h1>
+                    <a href="https://docs.google.com/document/d/1YrXxiVJq0c3yl19CwZR4nubUUooywH5_NurTKHFI7Zg/edit" style="font-size: 25px">API documentation (google doc)</a><br>
+                    <a href="https://docs.google.com/document/d/1VvLalzRVIndNdb0vi9fIZX4nzEf-hyOMjapeHc8xUF0/edit" style="font-size: 25px">Project Diary</a><br><br>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="color: #3399ff">Method</th>
+                                <th scope="col" style="color: #3399ff">URL</th>
+                                <th scope="col" style="color: #3399ff">Request Body (JSON)</th>
+                                <th scope="col" style="color: #3399ff">Response (JSON)</th>
+                                <th scope="col" style="color: #3399ff">Error (e)</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family:'Courier New'">
+                            <tr>
+                                <td style="font-weight: bold;">GET</td>
+                                <td>api/persons</td>
+                                <td></td>
+                                <td>[{person(1), {...}]</td>
+                                <td>(e3)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">GET</td>
+                                <td>api/persons/phone/{phone}<br>phone = users phone number</td>
+                                <td></td>
+                                <td>person(1)</td>
+                                <td>(e1)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">GET</td>
+                                <td>api/persons/count/{hobby}</td>
+                                <td></td>
+                                <td>{ Number }</td>
+                                <td>(e1)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">GET</td>
+                                <td>api/persons/hobby/{hobby}<br>hobby = name of hobby</td>
+                                <td></td>
+                                <td>[{person(1)}, {...}]</td>
+                                <td>(e1)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">GET</td>
+                                <td>api/persons/city/{city}<br>city = name of city</td>
+                                <td></td>
+                                <td>[{person(1)}, {...}]</td>
+                                <td>(e1)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">POST</td>
+                                <td>api/persons</td>
+                                <td>person(1)</td>
+                                <td>person(1)</td>
+                                <td>(e2), (e4), (e5)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">PUT</td>
+                                <td>api/persons/{id}</td>
+                                <td>person(1)</td>
+                                <td>person(1</td>
+                                <td>(e2), (e4), (e5)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">DELETE</td>
+                                <td>api/persons/{id}</td>
+                                <td></td>
+                                <td>person(1)</td>
+                                <td>(e1)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">GET</td>
+                                <td>api/zipcodes/</td>
+                                <td></td>
+                                <td>[{zipcode(2)}, {...}]</td>
+                                <td>(e3)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">GET</td>
+                                <td>api/persons/hobbies</td>
+                                <td></td>
+                                <td>[{hobby(3)},{...}]</td>
+                                <td>(e3)</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">GET</td>
+                                <td>api/persons/id/{id}</td>
+                                <td></td>
+                                <td>person(1)</td>
+                                <td>(e1)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col" style="margin-top: 10px">
+                    <h5>Response Objects:</h5><br>
+                    <div style="font-family:'Courier New'">
+                        person(1)<br>(don’t provide ID for POST):
+                        {<br>
+                        “id”: Number,<br>
+                        “firstName” : String,<br>
+                        “lastName” : String,<br>
+                        “phone” : [{“number”: String, “description”: String},....],<br>
+                        “hobbies”: [{“name”: String, “category”: String, "type": String} ....],<br>
+                        “street” : String,<br>
+                        “city”: String,<br>
+                        “zipCode” : String<br>
+                        }<br><br>
+
+                        zipcode(2):
+                        {<br>
+                        “zipCode” : String,<br>
+                        “city” : String<br>
+                        }<br><br>
+
+                        hobby(3):
+                        {<br>
+                        “name”: String,<br>
+                        “category”: String,<br>
+                        “type”: String<br>
+                        }<br><br>
+                    </div>
+                </div>
+
+                <div class="col" style="margin-top: 10px">
+                    <h5>Errors:</h5><br>
+                    <div style="font-family:'Courier New'">
+                        (e1):<br>
+                        { status : 404, "message": "Person with the provided x was not found.” }<br>
+                        <i>x = ID / phone number<br><br></i>
+                        (e2):<br>
+                        { status : 404, “message”: “All fields must be filled out” }<br><br>
+                        (e3):<br>
+                        { status : 500, “message”: “Internal server error” }<br><br>
+                        (e4):<br>
+                        { status : 404, "message": "The provided x is unavailable.” }<br>
+                        <i>x = email / phone number(s)<br><br></i>
+                        (e5):<br>
+                        { status : 404, "message": "City and ZipCode do not match” }<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>
