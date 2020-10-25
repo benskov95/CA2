@@ -49,7 +49,7 @@ public class PersonResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String getAllPersonsFromCity(@PathParam("city") String city) throws PersonNotFound {
         List<PersonDTO> personDTOs = FACADE.getAllPersonsFromCity(city);
-        return new Gson().toJson(personDTOs);
+        return GSON.toJson(personDTOs);
     }
 
     @GET
@@ -57,7 +57,7 @@ public class PersonResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String getAllPersonsWithHobby(@PathParam("hobby") String hobby) throws PersonNotFound {
         List<PersonDTO> personDTOs = FACADE.getAllPersonsWithHobby(hobby);
-        return new Gson().toJson(personDTOs);
+        return GSON.toJson(personDTOs);
     }
 
     @GET
@@ -65,7 +65,7 @@ public class PersonResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String getPersonByPhone(@PathParam("phone") String phone) throws PersonNotFound {
         PersonDTO personDTO = FACADE.getPersonByPhone(phone);
-        return new Gson().toJson(personDTO);
+        return GSON.toJson(personDTO);
     }
 
     @GET
@@ -87,7 +87,7 @@ public class PersonResource {
     public String addPerson(String person) throws MissingInput, CityNotFound, AlreadyExist {
         PersonDTO personDTO = GSON.fromJson(person, PersonDTO.class);
         personDTO = FACADE.addPerson(personDTO);
-        return new Gson().toJson(personDTO);
+        return GSON.toJson(personDTO);
     }
 
     @PUT
@@ -97,7 +97,7 @@ public class PersonResource {
         PersonDTO personDTO = GSON.fromJson(person, PersonDTO.class);
         personDTO.setId(id);
         personDTO = FACADE.editPerson(personDTO);
-        return new Gson().toJson(personDTO);
+        return GSON.toJson(personDTO);
     }
 
     @DELETE
@@ -105,7 +105,7 @@ public class PersonResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String deletePerson(@PathParam("id") int id) throws PersonNotFound {
         PersonDTO personDTO = FACADE.deletePerson(id);
-        return new Gson().toJson(personDTO);
+        return GSON.toJson(personDTO);
     }
     
     @GET
@@ -113,6 +113,6 @@ public class PersonResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String getAllHobbies() {
         List<HobbyDTO> hDTOs = FACADE.getAllHobbies();
-        return new Gson().toJson(hDTOs);
+        return GSON.toJson(hDTOs);
     }
 }

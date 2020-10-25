@@ -23,6 +23,6 @@ public class CityInfoResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String getAllZipCodes() {
         List<CityInfoDTO> cDTOs = FACADE.getAllZipCodes();
-        return new Gson().toJson(cDTOs);
+        return GSON.toJson(cDTOs);
     }
 }
